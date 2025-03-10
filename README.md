@@ -4,25 +4,49 @@
 
 The **Intelligent Traffic Signal Control System** (SMARTFLOW) aims to optimize urban traffic flow using AI-based real-time traffic density analysis. The system dynamically adjusts signal timings based on live vehicle counts and density, ensuring smoother traffic management and reduced congestion at intersections.
 
-## 🔧 Features
 
-- **Real-time Traffic Detection**: Utilizes computer vision to detect vehicles and calculate traffic density in real time.
-- **Adaptive Signal Control**: Dynamically adjusts traffic signal timings to minimize delays and optimize flow.
-- **Vehicle Prioritization**: Prioritizes emergency vehicles and public transport for efficient traffic management.
-- **Web-based Dashboard**: Provides a Streamlit-based interface for real-time visualization and monitoring.
-- **Multi-Camera Support**: Handles data from multiple intersections for scalable deployment.
+![model11-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/04d68a3f-16be-4871-80e8-399707323969)
+
+
+
+##Key Features
+
+🔍 Real-Time Object Detection
+
+Uses YOLOv8 to detect vehicles like cars, buses, trucks, and motorcycles in each frame.
+
+
+🔄 Robust Object Tracking
+
+Employs BYTETracker to maintain consistent vehicle identities across frames, ensuring smooth and reliable tracking.
+
+
+📏 Virtual Line Monitoring
+
+Implements a configurable virtual line to count vehicles and analyze traffic patterns as they cross a defined boundary.
+
+
+✏ Dynamic Annotations
+
+Annotates video streams with bounding boxes, labels, and trace lines to visualize vehicle trajectories and crossing events.
+
+
+🎥 Flexible Video Input
+
+Supports both live webcam feeds and recorded video files, making it adaptable to various deployment scenarios.
+
+
+📡 Hardware Integration for IoT-based Smart Traffic Control
+
+ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergency vehicles, buses) for priority access.
 
 ## 📌 Tech Stack
 
 | Component         | Technology                  |
 |-------------------|-----------------------------|
-| **Frontend**      | React                   |
-| **Backend**       | FastAPI                     |
+| **Frontend**      | React                       |
 | **ML Model**      | YOLOv8                      |
-| **Database**      | Firestore                   |
-| **Networking**    | WebSockets                  |
-
-## 🚀 Installation & Setup
+| **RFID Code**     | CPP                         |
 
 ### 1️⃣ Clone the Repository
 
@@ -32,11 +56,6 @@ git clone https://github.com/YourOrg/SMARTFLOW.git
 cd SMARTFLOW && pip install -r requirements.txt
 ```
 
-## 🖥️ Usage
-
-1. **Run the application** and allow camera access.
-2. **Monitor live traffic density** on the Streamlit dashboard.
-3. **Traffic lights adjust dynamically** based on detected vehicle count.
 
 ## 🛠️ How It Works
 
