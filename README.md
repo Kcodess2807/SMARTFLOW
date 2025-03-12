@@ -5,11 +5,12 @@
 The **Intelligent Traffic Signal Control System** (SMARTFLOW) aims to optimize urban traffic flow using AI-based real-time traffic density analysis. The system dynamically adjusts signal timings based on live vehicle counts and density, ensuring smoother traffic management and reduced congestion at intersections.
 
 
-![model11-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/04d68a3f-16be-4871-80e8-399707323969)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/04d68a3f-16be-4871-80e8-399707323969" alt="vehicle annotated result">
+</p>
 
 
-
-##Key Features
+## Key Features
 
 🔍 Real-Time Object Detection
 
@@ -39,6 +40,12 @@ Supports both live webcam feeds and recorded video files, making it adaptable to
 📡 Hardware Integration for IoT-based Smart Traffic Control
 
 ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergency vehicles, buses) for priority access.
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/567daffa-cd11-4985-a070-4a18c1538929" alt="vehicle annotated result">
+</p>
+
 
 ## 📌 Tech Stack
 
