@@ -77,11 +77,5 @@ cd SMARTFLOW && pip install -r requirements.txt
 - 🌍 **Edge Computing** for real-time processing on IoT devices.
 - 📊 **Historical Data Insights** to improve urban traffic planning.
 
-## 📜 License
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-Pull requests are welcome! Feel free to open an issue or suggest improvements.
-
 ## 📧 Contact
 For inquiries, reach out to **your-email@example.com** or visit our [GitHub](https://github.com/Karush2807/SMARTFLOW).
