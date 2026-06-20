@@ -19,98 +19,25 @@ from __future__ import annotations
 
 import argparse
 import os
-import xml.etree.ElementTree as ET
 from statistics import mean
-from typing import Callable, Dict, List
+from typing import Callable, List
 
 os.environ.setdefault("LIBSUMO_AS_TRACI", "1")
 
-from stable_baselines3 import DQN, PPO
-
 from . import config
-from .env import make_env
 from .baselines import FixedTimePolicy, ActuatedPolicy, MaxPressurePolicy
-
-
-# --------------------------------------------------------------------------- #
-# RL policy wrapper (parity with the baseline policy interface)
-# --------------------------------------------------------------------------- #
-class RLPolicy:
-    def __init__(self, model, name: str):
-        self.model = model
-        self.name = name
-        self.fixed_ts = False
-        self.net_file = None
-
-    def __call__(self, obs, env) -> int:  # noqa: ARG002
-        action, _ = self.model.predict(obs, deterministic=True)
-        return int(action)
-
-
-def _load_model(path: str):
-    """Load a saved SB3 model, picking DQN/PPO by filename."""
-    name = os.path.basename(path).lower()
-    cls = PPO if name.startswith("ppo") else DQN
-    return cls.load(path)
+from .policy import RLPolicy, load_model, algo_name
+from .rollout import run_episode
 
 
 # --------------------------------------------------------------------------- #
 # Evaluation harness
 # --------------------------------------------------------------------------- #
-def _parse_tripinfo(path: str) -> Dict[str, float]:
-    """Aggregate per-vehicle metrics from a SUMO tripinfo XML file."""
-    tree = ET.parse(path)
-    waits, losses = [], []
-    for trip in tree.getroot().findall("tripinfo"):
-        waits.append(float(trip.get("waitingTime", 0.0)))
-        losses.append(float(trip.get("timeLoss", 0.0)))
-    n = len(waits)
-    return {
-        "throughput_veh": float(n),
-        "avg_wait_s": mean(waits) if n else 0.0,
-        "avg_timeloss_s": mean(losses) if n else 0.0,
-    }
-
-
-def run_episode(policy, seed: int) -> Dict[str, float]:
-    """Run one full episode under ``policy`` and return aggregated metrics."""
-    tripinfo = str(config.LOG_DIR / f"tripinfo_{policy.name.replace(' ', '_')}_{seed}.xml")
-    env = make_env(
-        reward="queue_wait",
-        fixed_ts=getattr(policy, "fixed_ts", False),
-        net_file=getattr(policy, "net_file", None),
-        seed=seed,
-        additional_sumo_cmd=f"--tripinfo-output {tripinfo}",
-    )
-    if hasattr(policy, "reset"):
-        policy.reset()
-
-    obs, _ = env.reset()
-    queues, speeds = [], []
-    done = False
-    while not done:
-        action = policy(obs, env)
-        obs, _, terminated, truncated, info = env.step(action)
-        queues.append(info["system_total_stopped"])
-        speeds.append(info["system_mean_speed"])
-        done = terminated or truncated
-    env.close()
-
-    trip = _parse_tripinfo(tripinfo)
-    return {
-        "avg_wait_s": trip["avg_wait_s"],
-        "avg_timeloss_s": trip["avg_timeloss_s"],
-        "avg_queue_veh": mean(queues) if queues else 0.0,
-        "mean_speed_ms": mean(speeds) if speeds else 0.0,
-        "throughput_veh": trip["throughput_veh"],
-    }
-
-
 def evaluate(model_path: str, seeds: List[int]) -> "pd.DataFrame":
     import pandas as pd
 
-    model = _load_model(model_path)
-    rl_name = "RL (" + ("PPO" if os.path.basename(model_path).lower().startswith("ppo") else "DQN") + ")"
+    model = load_model(model_path)
+    rl_name = f"RL ({algo_name(model_path)})"
 
     # A fresh policy instance is built for every seed so any per-env caching
     # (e.g. max-pressure's phase->lane map) is rebuilt against the new env.

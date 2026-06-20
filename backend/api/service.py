@@ -44,11 +44,10 @@ class PolicyService:
         if not Path(self.model_path).exists():
             logger.warning("model file not found at %s; /predict will 503", self.model_path)
             return
-        from stable_baselines3 import DQN, PPO  # lazy: avoid torch import at module load
+        from rl.policy import load_model, algo_name  # lazy: defers the torch import
 
-        cls = PPO if Path(self.model_path).name.lower().startswith("ppo") else DQN
-        self.model = cls.load(self.model_path)
-        logger.info("loaded %s model from %s", cls.__name__, self.model_path)
+        self.model = load_model(self.model_path)
+        logger.info("loaded %s model from %s", algo_name(self.model_path), self.model_path)
 
     @property
     def ready(self) -> bool:
@@ -78,10 +77,10 @@ class PolicyService:
     # ----- simulation ---------------------------------------------------- #
     def simulate(self, controller: str, seed: int, num_seconds: int) -> dict:
         """Run one episode under the chosen controller and return real metrics."""
-        # Imported here so the heavy SUMO/eval stack loads on demand, not at boot.
-        from rl.evaluate import run_episode
+        # Imported here so the heavy SUMO stack loads on demand, not at boot.
+        from rl.rollout import run_episode
         from rl.baselines import FixedTimePolicy, ActuatedPolicy, MaxPressurePolicy
-        from rl.evaluate import RLPolicy
+        from rl.policy import RLPolicy
 
         if controller == "rl":
             if not self.ready:

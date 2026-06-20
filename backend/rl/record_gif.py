@@ -18,17 +18,11 @@ os.environ["LIBSUMO_AS_TRACI"] = "0"
 
 import glob
 
-from stable_baselines3 import DQN, PPO
-
 from . import config
 from .env import make_env
+from .policy import load_model
 
 DEFAULT_VIEW = "View #0"
-
-
-def _load_model(path: str):
-    name = os.path.basename(path).lower()
-    return (PPO if name.startswith("ppo") else DQN).load(path)
 
 
 def record(model_path: str, steps: int, out_gif: str, fps: int = 10) -> None:
@@ -39,7 +33,7 @@ def record(model_path: str, steps: int, out_gif: str, fps: int = 10) -> None:
     for old in glob.glob(str(frames_dir / "*.png")):
         os.remove(old)
 
-    model = _load_model(model_path)
+    model = load_model(model_path)
     env = make_env(reward="queue_wait", use_gui=True, seed=config.SEED, num_seconds=steps * config.ENV_CONFIG["delta_time"])
     obs, _ = env.reset()
 

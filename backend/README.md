@@ -249,7 +249,9 @@ backend/
 │   ├── env.py           single-agent SumoEnvironment factory (the bug fix lives here)
 │   ├── rewards.py       custom queue_wait reward + rationale
 │   ├── train.py         DQN/PPO training, TensorBoard, learning curve  (Phase 2)
-│   ├── evaluate.py      RL vs baselines, tripinfo metrics, table + plot (Phase 3)
+│   ├── evaluate.py      RL vs baselines, table + plot (Phase 3)
+│   ├── rollout.py       shared episode runner + SUMO tripinfo parsing
+│   ├── policy.py        model loading + RL policy adapter (shared)
 │   ├── baselines/       fixed_time · actuated · max_pressure
 │   ├── preemption.py    emergency-vehicle signal priority               (Phase 5)
 │   ├── emergency_demo.py / record_gif.py / signal_utils.py / config.py
