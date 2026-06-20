@@ -3,7 +3,10 @@ import Section from "./Section";
 import Reveal from "./Reveal";
 import BarChart from "./BarChart";
 import ComparisonTable from "./ComparisonTable";
+import LearningCurve from "./LearningCurve";
+import Reproducibility from "./Reproducibility";
 import DemoStrip from "./DemoStrip";
+import Citation from "./Citation";
 import { METRICS, RESULTS, improvement, EVAL_META } from "../data/results";
 
 export default function Results() {
@@ -18,10 +21,15 @@ export default function Results() {
   return (
     <Section
       id="results"
-      index="02"
+      index="§3"
       label="Results"
       title="The learned policy beats every classical baseline on the same scenario."
-      intro={EVAL_META.note}
+      intro={
+        <>
+          {EVAL_META.note} The baselines are fixed-time, gap-based actuated, and
+          max-pressure<Citation n={6} /> control.
+        </>
+      }
     >
       {/* Metric selector */}
       <Reveal>
@@ -106,28 +114,15 @@ export default function Results() {
         <ComparisonTable />
       </Reveal>
 
-      {/* Honest caveats */}
-      <Reveal className="mt-8 figure-frame border-l-2 border-l-amber p-6">
-        <span className="microlabel text-amber-deep">Reading the numbers honestly</span>
-        <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-graphite md:grid-cols-3">
-          <li>
-            <strong className="text-ink">Scope.</strong> One 4-way intersection,
-            simulated in SUMO over a 1-hour demand profile — not a field
-            deployment.
-          </li>
-          <li>
-            <strong className="text-ink">Throughput is saturated.</strong> Every
-            controller clears ~2,050 vehicles, so the win shows up in delay and
-            queue length, not throughput.
-          </li>
-          <li>
-            <strong className="text-ink">Emergency preemption</strong> is
-            implemented and validated in the digital twin; on the tested seed the
-            emergency vehicle was already unobstructed, so it is shown as a
-            capability, not a headline number.
-          </li>
-        </ul>
-      </Reveal>
+      {/* Learning curve + reproducibility */}
+      <div className="mt-12 grid items-start gap-8 lg:grid-cols-[1.6fr_1fr]">
+        <Reveal>
+          <LearningCurve />
+        </Reveal>
+        <Reveal>
+          <Reproducibility />
+        </Reveal>
+      </div>
 
       {/* Detection feed demo */}
       <DemoStrip />

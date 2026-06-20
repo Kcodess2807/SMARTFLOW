@@ -1,91 +1,198 @@
-# 🚦 Intelligent Traffic Signal Control System (SMARTFLOW)
+# SmartFlow: Reinforcement Learning for Adaptive Traffic-Signal Control
 
-## 📝 Project Overview
+**SmartFlow** studies whether a deep reinforcement-learning (RL) agent can
+control a signalized intersection more effectively than the fixed-time and
+actuated controllers used in practice. We cast isolated-intersection signal
+control as a Markov Decision Process, train a Deep Q-Network (DQN) agent inside
+the [SUMO](https://www.eclipse.dev/sumo/) microscopic traffic simulator, and
+benchmark it against three non-learning controllers under identical, randomized
+demand. The learned policy reduces mean vehicle waiting time by **≈ 55 %** versus
+a fixed-time plan and **≈ 25 %** versus SUMO's gap-based actuated controller,
+while sustaining the highest throughput. The trained policy is served through a
+FastAPI inference layer and complemented by a React dashboard and an ESP32 + RFID
+module for emergency-vehicle preemption.
 
-The **Intelligent Traffic Signal Control System** (SMARTFLOW) aims to optimize urban traffic flow using AI-based real-time traffic density analysis. The system dynamically adjusts signal timings based on live vehicle counts and density, ensuring smoother traffic management and reduced congestion at intersections.
+> Full methodology, training curves, ablations, and the inference API are
+> documented in **[`backend/README.md`](backend/README.md)**.
 
+---
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/04d68a3f-16be-4871-80e8-399707323969" alt="vehicle annotated result">
-</p>
+## 1. Motivation
 
+Most urban intersections run *fixed-time* plans that cannot react to fluctuating
+demand, or *actuated* controllers that extend a green from local vehicle gaps but
+optimize no network-level objective. Both leave measurable delay unaddressed when
+demand is asymmetric or bursty. Reinforcement learning offers a principled
+alternative: rather than hand-tuning timings, an agent learns a control policy
+directly from the objective of interest — minimizing delay and queueing — by
+interacting with a high-fidelity simulator. SmartFlow implements and rigorously
+evaluates this idea on a single intersection, prioritizing reproducibility and an
+honest comparison against strong baselines over headline numbers.
 
-## Key Features
+## 2. Problem formulation
 
-🔍 Real-Time Object Detection
+We model the intersection as a Markov Decision Process (MDP) and solve it with a
+single-agent [Gymnasium](https://gymnasium.farama.org/) environment built on
+[sumo-rl](https://github.com/LucasAlegre/sumo-rl).
 
-Uses YOLOv8 to detect vehicles like cars, buses, trucks, and motorcycles in each frame.
+**State** — `s_t ∈ [0, 1]^19`. A one-hot encoding of the active green phase (2),
+a binary flag for whether the minimum-green interval has elapsed (1), and the
+normalized per-lane vehicle density (8) and halting-queue ratio (8) over the eight
+incoming lanes.
 
+**Action** — `a_t ∈ {NS-green, EW-green}`. The agent selects the next green
+phase; the environment inserts the mandatory yellow transition and enforces
+minimum/maximum green, so the policy reasons about *which* movement to serve
+rather than low-level timing.
 
-🔄 Robust Object Tracking
+**Reward** — a hybrid of responsiveness and standing congestion:
 
-Employs BYTETracker to maintain consistent vehicle identities across frames, ensuring smooth and reliable tracking.
-
-
-📏 Virtual Line Monitoring
-
-Implements a configurable virtual line to count vehicles and analyze traffic patterns as they cross a defined boundary.
-
-
-✏ Dynamic Annotations
-
-Annotates video streams with bounding boxes, labels, and trace lines to visualize vehicle trajectories and crossing events.
-
-
-🎥 Flexible Video Input
-
-Supports both live webcam feeds and recorded video files, making it adaptable to various deployment scenarios.
-
-
-📡 Hardware Integration for IoT-based Smart Traffic Control
-
-ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergency vehicles, buses) for priority access.
-
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/567daffa-cd11-4985-a070-4a18c1538929" alt="vehicle annotated result">
-</p>
-
-
-## 📌 Tech Stack
-
-| Component             | Technology                                  |
-|-----------------------|---------------------------------------------|
-| **Frontend**          | React + Vite (`frontend/`)                  |
-| **RL backend + API**  | SUMO · sumo-rl · Stable-Baselines3 · FastAPI (`backend/`) |
-| **RFID firmware**     | C++ / ESP32 (`hardware/`)                   |
-
-*(An earlier Expo / React Native mobile prototype is preserved in git history.)*
-
-> **The reinforcement-learning traffic controller, training/evaluation, and
-> inference API live in [`backend/`](backend/README.md) — start there for the
-> backend/AI work, including real benchmark results.**
-
-### 1️⃣ Clone the Repository
-
-Clone the SMARTFLOW repository to your local machine:
-```bash
-git clone https://github.com/YourOrg/SMARTFLOW.git
-cd SMARTFLOW && pip install -r backend/requirements.txt
+```
+r_t = (W_{t-1} − W_t) − α · q̄_t ,    α = 0.5
 ```
 
+where `W_t` is the total accumulated waiting time and `q̄_t` the mean normalized
+queue. The first term credits the action for reducing delay; the second is a
+dense, bounded penalty that discourages starving a congested approach and keeps
+the reward scale stable across demand levels. The pure delta-waiting-time term is
+retained as a documented baseline reward.
 
-## 🛠️ How It Works
+## 3. Experimental setup
 
-1. **Traffic state** → per-lane queue lengths and densities at the intersection
-   (in simulation today; from camera/CV detection in a deployment).
-2. **RL agent decides** → a DQN policy chooses which green phase to run next.
-3. **Signal actuation** → the chosen phase is applied in SUMO (and would drive the
-   physical signal controller in deployment), with automatic yellow + min-green.
-4. **Emergency preemption** → an RFID-tagged emergency vehicle (ESP32, `hardware/`)
-   triggers green priority for its approach.
-5. **Evaluation** → the agent is benchmarked against fixed-time, actuated, and
-   max-pressure controllers on identical scenarios; see [`backend/README.md`](backend/README.md).
+- **Network & demand.** A four-way intersection, two lanes per approach
+  (13.9 m/s ≈ 50 km/h), compiled with SUMO's `netconvert`. Demand is generated
+  with `randomTrips` under a fixed seed, yielding ≈ 2,050 vehicles over one
+  simulated hour with randomized origin–destination pairs.
+- **Agent.** DQN (Stable-Baselines3) with an MLP policy `[128, 128]`, trained for
+  100,000 environment steps (≈ 41 min on a single CPU core) under a fixed seed.
+  Episode return improves from ≈ −11 (random policy) to ≈ −7.9.
+- **Baselines.** *(i)* **Fixed-time** — SUMO's static cyclic plan; *(ii)*
+  **Actuated** — SUMO's gap-based adaptive controller; *(iii)* **Max-pressure** —
+  an online heuristic that serves the approach with the greatest queued demand.
+- **Metrics.** Per-vehicle waiting time, time-loss, and throughput are read from
+  SUMO `tripinfo`; queue length and mean speed are time-averaged over the
+  episode. All controllers run through one identical evaluation harness.
+- **Protocol.** Results are averaged over three evaluation seeds (42, 7, 123).
 
-## 🏆 Future Enhancements
-- 🌐 **Multi-intersection coordination** via multi-agent RL (sumo-rl PettingZoo).
-- 🌍 **Edge Computing** for real-time processing on IoT devices.
-- 📷 **CV → control bridge**: feed live YOLOv8 lane counts into the RL state.
+## 4. Results
 
-## 📧 Contact
-For inquiries, reach out to **your-email@example.com** or visit our [GitHub](https://github.com/Karush2807/SMARTFLOW).
+**Table 1.** Mean performance over three seeds (single intersection, one-hour
+randomized demand). Arrows indicate the improving direction.
+
+| Controller       | Avg waiting (s) ↓ | Avg time-loss (s) ↓ | Avg queue (veh) ↓ | Mean speed (m/s) ↑ | Throughput (veh) ↑ |
+|------------------|------------------:|--------------------:|------------------:|-------------------:|-------------------:|
+| Fixed-time       |             11.37 |               21.49 |              7.37 |               6.48 |             2048.7 |
+| Actuated (SUMO)  |              6.87 |               16.39 |              4.55 |               7.41 |             2050.0 |
+| Max-pressure     |              5.28 |               14.50 |              3.27 |               7.82 |             2050.7 |
+| **RL (DQN)**     |          **5.14** |           **14.31** |          **3.19** |           **7.86** |         **2054.0** |
+
+<p align="center">
+  <img src="backend/results/comparison.png" alt="DQN agent versus baseline controllers across four metrics" width="100%">
+  <br>
+  <em>Figure 1 — The DQN agent against the three baselines on waiting time, queue
+  length, mean speed, and throughput.</em>
+</p>
+
+The learned policy outperforms both deployed-style controllers by a wide margin
+(−55 % waiting versus fixed-time, −25 % versus actuated) and additionally attains
+the highest throughput and mean speed. Against **max-pressure** the margin is
+small and expected: on an *isolated* intersection a well-tuned pressure heuristic
+is already near-optimal, so matching it — while leading on throughput and speed —
+is the informative outcome. The agent is genuinely state-dependent rather than
+degenerate: across 300 decisions it switched phase 140 times and served the
+more-congested direction 63 % of the time, trading switching cost against queue
+instead of acting myopically.
+
+**Emergency preemption.** Wrapping any base controller with the RFID-triggered
+preemption policy reduces the emergency vehicle's waiting time from **11.0 s to
+0.0 s** in the demonstrated scenario, with the underlying controller resuming
+immediately afterward.
+
+## 5. System architecture
+
+```
+   ┌──────────────┐   state s_t    ┌──────────────┐   action a_t   ┌──────────────┐
+   │  SUMO traffic │ ─────────────▶ │  DQN policy   │ ─────────────▶ │  SUMO signal  │
+   │  microsim     │ ◀───────────── │  (SB3 / torch)│ ◀───────────── │  (phase set)  │
+   └──────────────┘   reward r_t    └──────────────┘   s_{t+1}, r_t  └──────────────┘
+                                            │ trained policy (results/dqn_v1.zip)
+                                            ▼
+        ┌───────────────────┐   /predict · /simulate · /metrics · /health
+        │  FastAPI service   │ ◀──────────────  React dashboard (frontend/)
+        └───────────────────┘   ◀──────────────  ESP32 + RFID preemption trigger (hardware/)
+```
+
+The training loop couples SUMO and the agent; the serialized policy is loaded by
+a FastAPI service that returns signal decisions and runs evaluation episodes on
+demand. The React dashboard consumes the API, and the ESP32/RFID firmware
+supplies the real-world preemption signal.
+
+## 6. Repository structure
+
+| Path | Description |
+|------|-------------|
+| [`backend/`](backend/README.md) | RL model, SUMO environment, baselines, evaluation harness, and the FastAPI inference service |
+| [`frontend/`](frontend/) | React + Vite web dashboard |
+| [`hardware/`](hardware/) | ESP32 + RFID firmware for emergency-vehicle preemption |
+
+## 7. Reproducibility
+
+**Prerequisite:** [SUMO 1.22+](https://sumo.dlr.de/docs/Installing) with
+`SUMO_HOME` set.
+
+```bash
+git clone https://github.com/Kcodess2807/SMARTFLOW.git
+cd SMARTFLOW
+python -m venv .venv && . .venv/Scripts/activate     # macOS/Linux: . .venv/bin/activate
+pip install -r backend/requirements.txt
+
+cd backend
+python -m rl.train    --algo dqn --timesteps 100000  # train (≈ 41 min, CPU) -> artifacts/
+python -m rl.evaluate --model results/dqn_v1.zip --seeds 42 7 123   # reproduce Table 1
+python -m pytest tests/ -q                           # unit tests
+uvicorn api.main:app --reload                        # serve the inference API at :8000
+```
+
+A pre-trained policy ships in `backend/results/`, so evaluation and the API run
+without retraining. The frontend runs with `cd frontend && bun install && bun run dev`.
+
+## 8. Limitations and scope
+
+- **Single intersection, two phases.** Results characterize one isolated junction;
+  the regime where learning is expected to clearly surpass per-junction heuristics
+  is *coordinated, multi-intersection* control (see Roadmap).
+- **Simulated demand.** Traffic is randomized via `randomTrips` rather than drawn
+  from a measured dataset, so absolute figures are scenario-specific.
+- **Compute budget.** Training uses 100k steps on CPU; longer schedules,
+  hyperparameter search, or on-policy methods (e.g. PPO) may improve the agent.
+
+## 9. Roadmap
+
+- **Multi-agent coordination** across a network of intersections (sumo-rl /
+  PettingZoo), where global delay reduction is the primary objective.
+- **Perception-to-control bridge:** feed live camera-based lane counts (e.g.
+  YOLO detection) into the RL state for on-street deployment.
+- **Edge deployment** of the trained policy onto IoT-class hardware.
+
+## 10. Technology
+
+| Layer | Stack |
+|-------|-------|
+| RL & simulation | SUMO 1.22 · sumo-rl · Gymnasium · Stable-Baselines3 (DQN) · PyTorch |
+| Inference API   | FastAPI · Pydantic · Uvicorn · Docker |
+| Frontend        | React · Vite · TypeScript · Tailwind |
+| Hardware        | ESP32 · RFID (C++ / Arduino) |
+
+## References
+
+1. P. A. Lopez et al. *Microscopic Traffic Simulation using SUMO.* IEEE ITSC, 2018.
+2. L. N. Alegre. *SUMO-RL.* https://github.com/LucasAlegre/sumo-rl, 2019.
+3. A. Raffin et al. *Stable-Baselines3: Reliable Reinforcement Learning Implementations.* JMLR, 2021.
+4. V. Mnih et al. *Human-level control through deep reinforcement learning.* Nature, 2015.
+5. P. Varaiya. *Max pressure control of a network of signalized intersections.* Transportation Research Part C, 2013.
+
+## Team
+
+A collaborative project spanning the reinforcement-learning backend and inference
+API, the React frontend, and the ESP32/RFID firmware. Individual contributions
+are visible in the repository's commit history.

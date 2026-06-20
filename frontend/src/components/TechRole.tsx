@@ -41,7 +41,7 @@ export default function TechRole() {
   return (
     <Section
       id="build"
-      index="04"
+      index="§5"
       label="Tech & system"
       title="Computer vision, reinforcement learning, and a service to run them."
       intro="SmartFlow is a group project. Camera frames become lane-level demand, a reinforcement-learning agent turns that demand into signal decisions, and a small API serves the trained policy — with hardware priority for emergency vehicles. These are the pieces that make it up."

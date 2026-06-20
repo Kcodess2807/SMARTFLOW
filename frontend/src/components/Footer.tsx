@@ -1,7 +1,6 @@
 import { Github } from "lucide-react";
 import { LINKS } from "../data/content";
 import { HEADLINE } from "../data/results";
-import SignalMark from "./SignalMark";
 import Reveal from "./Reveal";
 
 export default function Footer() {
@@ -9,8 +8,7 @@ export default function Footer() {
     <footer className="border-t border-rule bg-surface">
       <div className="mx-auto max-w-page px-6 py-16 md:px-10 md:py-20">
         <Reveal>
-          <div className="flex items-center gap-2.5 font-display text-xl font-semibold text-ink">
-            <SignalMark className="h-6 w-6" />
+          <div className="font-display text-xl font-semibold text-ink">
             SmartFlow
           </div>
           <p className="mt-4 max-w-prose font-display text-2xl font-medium leading-snug text-ink">

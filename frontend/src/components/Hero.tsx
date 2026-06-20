@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, Github } from "lucide-react";
-import { HERO, LINKS } from "../data/content";
+import { HERO, LINKS, META } from "../data/content";
 import { HEADLINE } from "../data/results";
 import IntersectionAnimation from "./IntersectionAnimation";
 
@@ -18,7 +18,10 @@ export default function Hero() {
       className="mx-auto flex max-w-page flex-col gap-12 px-6 pb-20 pt-16 md:grid md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-16 md:px-10 md:pb-28 md:pt-24"
     >
       <div className="min-w-0 animate-fade-up">
-        <p className="microlabel">{HERO.kicker}</p>
+        <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
+          {META.kind} · {META.version} · {META.year}
+        </p>
+        <p className="microlabel mt-2">{HERO.kicker}</p>
 
         <h1
           id="hero-title"

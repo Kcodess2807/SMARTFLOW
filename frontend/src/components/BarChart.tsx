@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { RESULTS, type MetricKey } from "../data/results";
+import { RESULTS, seedStats, type MetricKey } from "../data/results";
 
 interface Props {
   metric: MetricKey;
@@ -7,7 +7,8 @@ interface Props {
   betterWhen: "lower" | "higher";
 }
 
-/** Horizontal bar chart of one metric across all controllers, RL highlighted. */
+/** Horizontal bar chart of one metric across all controllers, RL highlighted,
+ *  with per-seed min–max error bars where seed-level data was recorded. */
 export default function BarChart({ metric, unit, betterWhen }: Props) {
   const reduce = useReducedMotion();
   const values = RESULTS.map((r) => r[metric]);
@@ -19,11 +20,15 @@ export default function BarChart({ metric, unit, betterWhen }: Props) {
   const spread = max - min;
   const axisMin = spread / max < 0.05 ? min - spread * 1.4 : 0;
   const range = max - axisMin || 1;
+  const toPct = (v: number) => ((v - axisMin) / range) * 100;
+
+  const anyErrorBars = RESULTS.some((r) => seedStats(r.controller, metric));
 
   return (
     <div role="img" aria-label={`${metric} by controller`} className="space-y-3">
       {RESULTS.map((r, i) => {
-        const pct = ((r[metric] - axisMin) / range) * 100;
+        const pct = toPct(r[metric]);
+        const stats = seedStats(r.controller, metric);
         return (
           <div key={r.controller} className="grid grid-cols-[7.5rem_1fr] items-center gap-3 sm:grid-cols-[9rem_1fr]">
             <div className="text-right">
@@ -46,6 +51,23 @@ export default function BarChart({ metric, unit, betterWhen }: Props) {
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
                 style={reduce ? { width: `${pct}%` } : undefined}
               />
+
+              {/* per-seed min–max whisker */}
+              {stats && stats.max > stats.min && (
+                <motion.div
+                  className="pointer-events-none absolute inset-y-0"
+                  style={{ left: `${toPct(stats.min)}%`, width: `${toPct(stats.max) - toPct(stats.min)}%` }}
+                  initial={reduce ? false : { opacity: 0 }}
+                  whileInView={reduce ? undefined : { opacity: 1 }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{ duration: 0.4, delay: 0.5 + i * 0.08 }}
+                >
+                  <div className="absolute top-1/2 h-px w-full -translate-y-1/2 bg-ink/70" />
+                  <div className="absolute left-0 top-1/2 h-2.5 w-px -translate-y-1/2 bg-ink/70" />
+                  <div className="absolute right-0 top-1/2 h-2.5 w-px -translate-y-1/2 bg-ink/70" />
+                </motion.div>
+              )}
+
               <span
                 className={`absolute right-3 top-1/2 -translate-y-1/2 font-mono text-sm font-bold ${
                   r.isRL ? "text-white" : "text-ink"
@@ -57,9 +79,10 @@ export default function BarChart({ metric, unit, betterWhen }: Props) {
           </div>
         );
       })}
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pt-1">
         <span className="microlabel">{unit}</span>
         <span className="microlabel">
+          {anyErrorBars ? "│ min–max over 3 seeds · " : ""}
           {betterWhen === "lower" ? "↓ lower is better" : "↑ higher is better"}
         </span>
       </div>
