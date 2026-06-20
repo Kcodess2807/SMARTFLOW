@@ -3,10 +3,11 @@ import { LINKS } from "../data/content";
 import SignalMark from "./SignalMark";
 
 const NAV_ITEMS = [
-  { href: "#approach", label: "Approach" },
+  { href: "#abstract", label: "Abstract" },
+  { href: "#approach", label: "Problem" },
+  { href: "#architecture", label: "Method" },
   { href: "#results", label: "Results" },
-  { href: "#architecture", label: "How it works" },
-  { href: "#build", label: "System" },
+  { href: "#references", label: "References" },
 ];
 
 export default function Nav() {

@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Section from "./Section";
+import { MDP } from "../data/content";
+import { stagger, VIEWPORT } from "../lib/motion";
 import Reveal from "./Reveal";
-import { MDP, ENV_CONFIG, TRAINING } from "../data/content";
-import { fadeUp, stagger, VIEWPORT } from "../lib/motion";
 
 function MdpCard({
   step,
@@ -12,6 +12,7 @@ function MdpCard({
   items,
   note,
   formula,
+  eq,
 }: {
   step: string;
   title: string;
@@ -20,6 +21,7 @@ function MdpCard({
   items: string[];
   note: string;
   formula?: string;
+  eq?: string;
 }) {
   return (
     <Reveal asChild className="figure-frame flex flex-col p-6">
@@ -35,9 +37,10 @@ function MdpCard({
       <p className="mt-1 text-sm text-graphite">{summary}</p>
 
       {formula && (
-        <p className="mt-5 rounded-sm bg-sunken px-3 py-3 text-center font-mono text-sm text-ink">
-          {formula}
-        </p>
+        <div className="mt-5 flex items-center gap-3 rounded-sm bg-sunken px-3 py-3">
+          <p className="flex-1 text-center font-mono text-sm text-ink">{formula}</p>
+          {eq && <span className="font-mono text-xs text-muted">{eq}</span>}
+        </div>
       )}
 
       <ul className="mt-5 space-y-2.5">
@@ -56,37 +59,13 @@ function MdpCard({
   );
 }
 
-function SpecTable({
-  caption,
-  rows,
-}: {
-  caption: string;
-  rows: { label: string; value: string }[];
-}) {
-  return (
-    <div className="figure-frame overflow-hidden">
-      <div className="border-b border-rule px-5 py-3">
-        <span className="microlabel">{caption}</span>
-      </div>
-      <dl className="divide-y divide-rule">
-        {rows.map((r) => (
-          <div key={r.label} className="flex items-center justify-between px-5 py-2.5">
-            <dt className="text-sm text-graphite">{r.label}</dt>
-            <dd className="font-mono text-sm text-ink">{r.value}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-}
-
 export default function Approach() {
   const reduce = useReducedMotion();
   return (
     <Section
       id="approach"
-      index="01"
-      label="Problem & approach"
+      index="§1"
+      label="Problem formulation"
       title="Framing the intersection as a control problem the agent can learn."
       intro="A fixed-time signal repeats the same schedule no matter the traffic. Here the signal is a reinforcement-learning agent: every few seconds it reads live demand on each lane and decides which direction gets the green. That decision loop is a Markov decision process — a state it observes, an action it takes, and a reward it tries to maximise."
     >
@@ -118,15 +97,11 @@ export default function Approach() {
           title={MDP.reward.title}
           summary={MDP.reward.summary}
           formula={MDP.reward.formula}
+          eq="(1)"
           items={MDP.reward.items}
           note={MDP.reward.note}
         />
       </motion.div>
-
-      <Reveal variants={fadeUp} className="mt-5 grid gap-5 md:grid-cols-2">
-        <SpecTable caption="SUMO environment" rows={ENV_CONFIG} />
-        <SpecTable caption="Training setup" rows={TRAINING} />
-      </Reveal>
     </Section>
   );
 }
