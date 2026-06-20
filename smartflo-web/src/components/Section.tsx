@@ -41,7 +41,7 @@ export default function Section({
           </div>
           <h2
             id={headingId}
-            className="mt-5 max-w-3xl font-display text-display-sm font-semibold tracking-tight text-ink"
+            className="mt-5 max-w-3xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl md:text-display-sm"
           >
             {title}
           </h2>

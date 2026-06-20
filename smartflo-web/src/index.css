@@ -16,6 +16,7 @@
     @apply bg-paper text-ink font-sans antialiased;
     font-feature-settings: "kern", "liga", "calt";
     text-rendering: optimizeLegibility;
+    overflow-x: hidden; /* guard against incidental horizontal scroll on small screens */
   }
 
   /* Fraunces optical sizing for large display type */

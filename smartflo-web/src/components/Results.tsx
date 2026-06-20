@@ -55,7 +55,7 @@ export default function Results() {
         className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]"
       >
         <Reveal className="figure-frame p-6 md:p-8">
-          <div className="mb-6 flex items-baseline justify-between">
+          <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
             <h3 className="font-display text-xl font-semibold text-ink">
               {metric.label}
             </h3>
@@ -99,7 +99,7 @@ export default function Results() {
 
       {/* Full comparison table */}
       <Reveal className="mt-12">
-        <div className="mb-4 flex items-baseline justify-between">
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <span className="microlabel">Tbl. 1 · full comparison</span>
           <span className="microlabel">mean over seeds {EVAL_META.seeds.join(", ")}</span>
         </div>

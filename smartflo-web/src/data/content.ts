@@ -13,7 +13,7 @@ export const LINKS = {
 };
 
 export const HERO = {
-  kicker: "Reinforcement learning · SUMO · traffic-signal control",
+  kicker: "Reinforcement learning · SUMO · signal control",
   headline: "A traffic light that learns to clear the queue.",
   sub: "An RL agent observes lane-level demand at an intersection and chooses the next green phase — trained in the SUMO traffic simulator and benchmarked against fixed-time, actuated, and max-pressure control.",
 };

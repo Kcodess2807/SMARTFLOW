@@ -2,54 +2,41 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, Github } from "lucide-react";
 import { HERO, LINKS } from "../data/content";
 import { HEADLINE } from "../data/results";
-import { fadeUp, stagger } from "../lib/motion";
 import IntersectionAnimation from "./IntersectionAnimation";
 
+// The hero is the LCP block, so its entrance is a pure-CSS animation
+// (Tailwind `animate-fade-up`) rather than a JS-driven one — it always ends
+// visible regardless of load timing, and the reduced-motion media query in
+// index.css neutralises it. Framer is reserved for the live signal animation.
 export default function Hero() {
   const reduce = useReducedMotion();
-  const container = reduce ? undefined : stagger(0.1);
 
   return (
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="mx-auto grid max-w-page items-center gap-12 px-6 pb-20 pt-16 md:grid-cols-[1.15fr_0.85fr] md:gap-16 md:px-10 md:pb-28 md:pt-24"
+      className="mx-auto flex max-w-page flex-col gap-12 px-6 pb-20 pt-16 md:grid md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-16 md:px-10 md:pb-28 md:pt-24"
     >
-      <motion.div
-        variants={container}
-        initial={reduce ? undefined : "hidden"}
-        animate={reduce ? undefined : "show"}
-      >
-        <motion.p variants={fadeUp} className="microlabel">
-          {HERO.kicker}
-        </motion.p>
+      <div className="min-w-0 animate-fade-up">
+        <p className="microlabel">{HERO.kicker}</p>
 
-        <motion.h1
+        <h1
           id="hero-title"
-          variants={fadeUp}
-          className="mt-6 font-display text-display-md font-semibold leading-[0.98] tracking-tight text-ink md:text-display-lg"
+          className="mt-6 font-display text-display-sm font-semibold leading-[1.0] tracking-tight text-ink sm:text-display-md sm:leading-[0.98] md:text-display-lg"
         >
           {HERO.headline}
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          variants={fadeUp}
-          className="mt-7 max-w-prose text-lg leading-relaxed text-graphite"
-        >
+        <p className="mt-7 max-w-prose text-lg leading-relaxed text-graphite">
           {HERO.sub}
-        </motion.p>
+        </p>
 
         {/* Strongest real result */}
-        <motion.div
-          variants={fadeUp}
-          className="mt-9 flex flex-wrap items-end gap-x-8 gap-y-4 border-t border-rule pt-7"
-        >
+        <div className="mt-9 flex flex-wrap items-end gap-x-8 gap-y-4 border-t border-rule pt-7">
           <div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-display text-5xl font-semibold tracking-tight text-go">
-                −{HEADLINE.waitReductionVsFixed}%
-              </span>
-            </div>
+            <span className="font-display text-5xl font-semibold tracking-tight text-go-deep">
+              −{HEADLINE.waitReductionVsFixed}%
+            </span>
             <p className="mt-1 max-w-[22ch] text-sm text-graphite">
               average vehicle waiting time vs. a fixed-time controller
             </p>
@@ -59,9 +46,9 @@ export default function Hero() {
             <span className="px-2 text-rule">/</span>
             <span>{HEADLINE.fixedWait}s</span> fixed-time
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div variants={fadeUp} className="mt-9 flex flex-wrap gap-3">
+        <div className="mt-9 flex flex-wrap gap-3">
           <a
             href="#results"
             className="inline-flex items-center gap-2 rounded bg-go px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-go-deep"
@@ -77,22 +64,20 @@ export default function Hero() {
             <Github className="h-4 w-4" aria-hidden="true" />
             GitHub
           </a>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Domain hero animation */}
-      <motion.div
-        variants={fadeUp}
-        initial={reduce ? undefined : "hidden"}
-        animate={reduce ? undefined : "show"}
-        className="figure-frame relative p-5 md:p-7"
+      <div
+        className="figure-frame relative min-w-0 animate-fade-up p-5 md:p-7"
+        style={reduce ? undefined : { animationDelay: "0.12s" }}
       >
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <span className="microlabel">Fig. 0 — single intersection</span>
           <span className="microlabel text-go-deep">agent-controlled</span>
         </div>
         <IntersectionAnimation />
-      </motion.div>
+      </div>
 
       {/* scroll cue */}
       {!reduce && (
