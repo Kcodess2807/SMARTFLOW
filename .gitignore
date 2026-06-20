@@ -49,3 +49,16 @@ ckpt/*
 #pytest cache
 .cache/
 .env
+
+# ---------------------------------------------------------------------------
+# SmartFlow portfolio-refactor (backend RL + API)
+# ---------------------------------------------------------------------------
+# Python virtual environment
+.venv/
+# Training/eval artifacts: models, TensorBoard logs, plots, GIFs (regenerable)
+backend/artifacts/
+# SUMO intermediate trip file (the committed route file is derived from it)
+backend/rl/nets/*.trips.xml
+# Bytecode / caches
+__pycache__/
+*.pyc
