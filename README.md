@@ -1,91 +1,117 @@
-# 🚦 Intelligent Traffic Signal Control System (SMARTFLOW)
+# 🚦 SmartFlow — Adaptive Traffic-Signal Control with Reinforcement Learning
 
-## 📝 Project Overview
+SmartFlow controls a traffic intersection's signals with deep reinforcement
+learning. Instead of running a fixed timer, a trained agent reads the live
+per-lane traffic state and chooses which movement to give green — adapting in
+real time to cut waiting and congestion. The agent is trained and evaluated
+entirely in the [SUMO](https://www.eclipse.dev/sumo/) traffic simulator against
+classical controllers, served through a FastAPI inference API, and paired with a
+React dashboard and an ESP32 + RFID module for emergency-vehicle priority.
 
-The **Intelligent Traffic Signal Control System** (SMARTFLOW) aims to optimize urban traffic flow using AI-based real-time traffic density analysis. The system dynamically adjusts signal timings based on live vehicle counts and density, ensuring smoother traffic management and reduced congestion at intersections.
+> The full RL methodology, training, and benchmark analysis live in
+> **[`backend/README.md`](backend/README.md)** — start there for the AI/backend work.
 
+---
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/04d68a3f-16be-4871-80e8-399707323969" alt="vehicle annotated result">
-</p>
+## Results
 
+Single intersection, randomized one-hour demand, averaged over 3 seeds — every
+number comes from a reproducible run (no hand-set figures):
 
-## Key Features
+| Controller        | Avg wait (s) ↓ | Avg queue (veh) ↓ | Throughput ↑ |
+|-------------------|---------------:|------------------:|-------------:|
+| Fixed-time        |          11.37 |              7.37 |       2048.7 |
+| Actuated (SUMO)   |           6.87 |              4.55 |       2050.0 |
+| Max-pressure      |           5.28 |              3.27 |       2050.7 |
+| **RL (DQN)**      |       **5.14** |          **3.19** |   **2054.0** |
 
-🔍 Real-Time Object Detection
-
-Uses YOLOv8 to detect vehicles like cars, buses, trucks, and motorcycles in each frame.
-
-
-🔄 Robust Object Tracking
-
-Employs BYTETracker to maintain consistent vehicle identities across frames, ensuring smooth and reliable tracking.
-
-
-📏 Virtual Line Monitoring
-
-Implements a configurable virtual line to count vehicles and analyze traffic patterns as they cross a defined boundary.
-
-
-✏ Dynamic Annotations
-
-Annotates video streams with bounding boxes, labels, and trace lines to visualize vehicle trajectories and crossing events.
-
-
-🎥 Flexible Video Input
-
-Supports both live webcam feeds and recorded video files, making it adaptable to various deployment scenarios.
-
-
-📡 Hardware Integration for IoT-based Smart Traffic Control
-
-ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergency vehicles, buses) for priority access.
-
+The learned policy reduces average waiting time **~55% vs. a fixed-time plan**
+and **~25% vs. SUMO's actuated controller**, while moving the most vehicles.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/567daffa-cd11-4985-a070-4a18c1538929" alt="vehicle annotated result">
+  <img src="backend/results/comparison.png" alt="RL agent vs. baseline controllers" width="100%">
 </p>
 
+---
 
-## 📌 Tech Stack
+## Repository structure
 
-| Component             | Technology                                  |
-|-----------------------|---------------------------------------------|
-| **Frontend**          | React + Vite (`frontend/`)                  |
-| **RL backend + API**  | SUMO · sumo-rl · Stable-Baselines3 · FastAPI (`backend/`) |
-| **RFID firmware**     | C++ / ESP32 (`hardware/`)                   |
+| Path | Description |
+|------|-------------|
+| [`backend/`](backend/README.md) | RL model, SUMO environment, baselines, evaluation, and the FastAPI inference API |
+| [`frontend/`](frontend/) | React + Vite web dashboard |
+| [`hardware/`](hardware/) | ESP32 + RFID firmware for emergency-vehicle preemption |
 
-*(An earlier Expo / React Native mobile prototype is preserved in git history.)*
+---
 
-> **The reinforcement-learning traffic controller, training/evaluation, and
-> inference API live in [`backend/`](backend/README.md) — start there for the
-> backend/AI work, including real benchmark results.**
+## How it works
 
-### 1️⃣ Clone the Repository
+1. **Sense** — per-lane queue lengths and densities describe the intersection
+   state (from the simulator today; from camera/CV detection in a deployment).
+2. **Decide** — a DQN policy selects the next green phase from that state.
+3. **Act** — the phase is applied in SUMO with automatic yellow and minimum-green
+   safety, so the agent genuinely controls the signal.
+4. **Prioritise** — an RFID-tagged emergency vehicle (ESP32) preempts the signal
+   to clear its approach.
+5. **Evaluate** — the agent is benchmarked against fixed-time, actuated, and
+   max-pressure controllers on identical traffic.
 
-Clone the SMARTFLOW repository to your local machine:
+---
+
+## Quick start
+
+**Prerequisite:** [SUMO 1.22+](https://sumo.dlr.de/docs/Installing) installed with
+`SUMO_HOME` set.
+
 ```bash
-git clone https://github.com/YourOrg/SMARTFLOW.git
-cd SMARTFLOW && pip install -r backend/requirements.txt
+git clone https://github.com/Kcodess2807/SMARTFLOW.git
+cd SMARTFLOW
 ```
 
+**Backend — RL & API**
 
-## 🛠️ How It Works
+```bash
+python -m venv .venv && . .venv/Scripts/activate    # macOS/Linux: . .venv/bin/activate
+pip install -r backend/requirements.txt
+cd backend
+python -m rl.evaluate --model results/dqn_v1.zip    # reproduce the results table
+uvicorn api.main:app --reload                       # serve the inference API at :8000
+```
 
-1. **Traffic state** → per-lane queue lengths and densities at the intersection
-   (in simulation today; from camera/CV detection in a deployment).
-2. **RL agent decides** → a DQN policy chooses which green phase to run next.
-3. **Signal actuation** → the chosen phase is applied in SUMO (and would drive the
-   physical signal controller in deployment), with automatic yellow + min-green.
-4. **Emergency preemption** → an RFID-tagged emergency vehicle (ESP32, `hardware/`)
-   triggers green priority for its approach.
-5. **Evaluation** → the agent is benchmarked against fixed-time, actuated, and
-   max-pressure controllers on identical scenarios; see [`backend/README.md`](backend/README.md).
+**Frontend — dashboard**
 
-## 🏆 Future Enhancements
-- 🌐 **Multi-intersection coordination** via multi-agent RL (sumo-rl PettingZoo).
-- 🌍 **Edge Computing** for real-time processing on IoT devices.
-- 📷 **CV → control bridge**: feed live YOLOv8 lane counts into the RL state.
+```bash
+cd frontend
+bun install && bun run dev                          # or: npm install && npm run dev
+```
 
-## 📧 Contact
-For inquiries, reach out to **your-email@example.com** or visit our [GitHub](https://github.com/Karush2807/SMARTFLOW).
+For training, the visual SUMO demo, API usage, and the honest limitations, see
+**[`backend/README.md`](backend/README.md)**.
+
+---
+
+## Tech stack
+
+| Layer            | Technology |
+|------------------|------------|
+| RL & simulation  | SUMO · sumo-rl · Gymnasium · Stable-Baselines3 (DQN) · PyTorch |
+| Inference API    | FastAPI · Pydantic · Uvicorn · Docker |
+| Frontend         | React · Vite · TypeScript · Tailwind |
+| Hardware         | ESP32 · RFID (C++ / Arduino) |
+
+---
+
+## Roadmap
+
+- **Multi-intersection coordination** via multi-agent RL (sumo-rl / PettingZoo).
+- **Camera → control bridge:** feed live YOLO-based lane counts into the RL state
+  for on-street deployment.
+- **Edge deployment** of the trained policy on IoT hardware.
+
+---
+
+## Team
+
+A collaborative project spanning the reinforcement-learning backend and API, the
+React frontend, and the ESP32/RFID firmware. Contributions are visible in the
+repository history.
