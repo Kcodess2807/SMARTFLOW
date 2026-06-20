@@ -217,6 +217,34 @@ docker run -p 8000:8000 smartflow-api
 
 ---
 
+## Watch it run (visual demo)
+
+A presentable demo scenario lives in [`scenarios/demo/`](scenarios/demo/): a
+colour-coded vehicle mix (blue cars, green buses, orange trucks) on a real-world
+background, with heavier North-South demand so the agent's switching is obvious,
+plus two red emergency vehicles cutting across. Demand is tuned so the
+intersection stays busy but flowing (≈18 vehicles queued on average under the
+agent), not gridlocked.
+
+```bash
+# 1) Instant look at the scenario (SUMO's built-in fixed-time signal), no Python:
+sumo-gui -c backend/scenarios/demo/demo.sumocfg
+
+# 2) The TRAINED RL AGENT driving the signal, recorded to a GIF (opens sumo-gui;
+#    a short warm-up runs first so the roads are full in frame one):
+cd backend
+python -m rl.record_gif --model results/dqn_v1.zip --steps 160 --warmup 20
+#  -> artifacts/plots/agent_demo.gif
+```
+
+Both load [`scenarios/demo/demo.view.xml`](scenarios/demo/demo.view.xml) (zoom,
+enlarged vehicles, playback speed). This demo scenario is intentionally separate
+from the training/eval routes, so it changes the visuals without affecting the
+published results. Tip: in sumo-gui you can switch *Vehicles → colour by speed*
+to watch queues turn red and discharge green as the light changes.
+
+---
+
 ## Reproduce from scratch
 
 ```bash
@@ -232,7 +260,7 @@ python -m rl.train    --algo dqn --timesteps 100000 --tag v1   # ~40 min CPU -> 
 python -m rl.evaluate --model artifacts/models/dqn_v1.zip --seeds 42 7 123
 python -m rl.emergency_demo
 python -m pytest tests/ -q                                      # fast unit tests
-# optional demo clip (opens sumo-gui): python -m rl.record_gif --model artifacts/models/dqn_v1.zip
+# visual demo (opens sumo-gui): see "Watch it run" above
 ```
 
 A pre-trained policy is shipped in [`results/dqn_v1.zip`](results/) so the API
@@ -249,7 +277,9 @@ backend/
 │   ├── env.py           single-agent SumoEnvironment factory (the bug fix lives here)
 │   ├── rewards.py       custom queue_wait reward + rationale
 │   ├── train.py         DQN/PPO training, TensorBoard, learning curve  (Phase 2)
-│   ├── evaluate.py      RL vs baselines, tripinfo metrics, table + plot (Phase 3)
+│   ├── evaluate.py      RL vs baselines, table + plot (Phase 3)
+│   ├── rollout.py       shared episode runner + SUMO tripinfo parsing
+│   ├── policy.py        model loading + RL policy adapter (shared)
 │   ├── baselines/       fixed_time · actuated · max_pressure
 │   ├── preemption.py    emergency-vehicle signal priority               (Phase 5)
 │   ├── emergency_demo.py / record_gif.py / signal_utils.py / config.py

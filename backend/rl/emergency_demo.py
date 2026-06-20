@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import xml.etree.ElementTree as ET
 from typing import Dict, Optional
 
 os.environ.setdefault("LIBSUMO_AS_TRACI", "1")
@@ -22,21 +21,10 @@ from . import config
 from .env import make_env
 from .baselines import MaxPressurePolicy
 from .preemption import EmergencyPreemptionController
+from .rollout import parse_vehicle_tripinfo
 
 EV_ID = "ev0"
 NUM_SECONDS = 700
-
-
-def _ev_metrics(tripinfo_path: str, veh_id: str = EV_ID) -> Optional[Dict[str, float]]:
-    root = ET.parse(tripinfo_path).getroot()
-    for trip in root.findall("tripinfo"):
-        if trip.get("id") == veh_id:
-            return {
-                "wait_s": float(trip.get("waitingTime", 0.0)),
-                "timeloss_s": float(trip.get("timeLoss", 0.0)),
-                "duration_s": float(trip.get("duration", 0.0)),
-            }
-    return None
 
 
 def _run(policy, seed: int, tag: str) -> Dict[str, float]:
@@ -56,18 +44,16 @@ def _run(policy, seed: int, tag: str) -> Dict[str, float]:
         obs, _, term, trunc, _ = env.step(policy(obs, env))
         done = term or trunc
     env.close()
-    metrics = _ev_metrics(tripinfo) or {"wait_s": float("nan"), "timeloss_s": float("nan")}
+    metrics = parse_vehicle_tripinfo(tripinfo, EV_ID) or {"wait_s": float("nan"), "timeloss_s": float("nan")}
     metrics["preemptions"] = float(getattr(policy, "preemption_steps", 0))
     return metrics
 
 
 def _make_base(model_path: Optional[str]):
     if model_path:
-        from stable_baselines3 import DQN, PPO
-        from .evaluate import RLPolicy
+        from .policy import load_model, RLPolicy
 
-        cls = PPO if os.path.basename(model_path).lower().startswith("ppo") else DQN
-        return RLPolicy(cls.load(model_path), "RL"), "RL"
+        return RLPolicy(load_model(model_path), "RL"), "RL"
     return MaxPressurePolicy(), "max-pressure"
 
 

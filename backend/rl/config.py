@@ -28,6 +28,10 @@ SUMOCFG_FILE = NETS_DIR / "single.sumocfg"
 SCENARIOS_DIR = BACKEND_DIR / "scenarios"
 EMERGENCY_ROUTE_FILE = SCENARIOS_DIR / "emergency" / "emergency.rou.xml"
 
+# Presentable demo assets (colourful typed traffic + sumo-gui view settings).
+DEMO_ROUTE_FILE = SCENARIOS_DIR / "demo" / "demo.rou.xml"
+DEMO_VIEW_FILE = SCENARIOS_DIR / "demo" / "demo.view.xml"
+
 for _d in (MODELS_DIR, LOG_DIR, PLOTS_DIR):
     _d.mkdir(parents=True, exist_ok=True)
 
