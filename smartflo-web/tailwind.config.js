@@ -14,8 +14,8 @@ export default {
         sunken: "#ECE8DD", // recessed wells, table zebra
         // Ink / text
         ink: "#14171A", // primary text, headlines
-        graphite: "#5A6066", // secondary text, captions
-        muted: "#8A8F98", // tertiary / micro-labels
+        graphite: "#5A6066", // secondary text, captions (AA on paper)
+        muted: "#656A72", // tertiary / micro-labels (AA on paper)
         rule: "#D8D2C4", // hairline rules, borders, blueprint ticks
         // Signal accents (used functionally, never as gradient decoration)
         go: {
@@ -24,7 +24,8 @@ export default {
           tint: "#E4EFE9",
         },
         amber: {
-          DEFAULT: "#E08A00", // secondary accent / caution
+          DEFAULT: "#E08A00", // secondary accent / caution (fills, borders)
+          deep: "#9A5B00", // AA-compliant amber for small text
           tint: "#F8ECD6",
         },
         stop: {

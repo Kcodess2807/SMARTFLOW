@@ -36,7 +36,7 @@ export default function Architecture() {
                 className="flex-1 rounded-md border border-rule bg-paper p-5"
               >
                 <div className="flex items-center justify-between">
-                  <span className="microlabel text-go">{`0${i + 1}`}</span>
+                  <span className="microlabel text-go-deep">{`0${i + 1}`}</span>
                   <span className="font-mono text-xs text-muted">{node.id}</span>
                 </div>
                 <h3 className="mt-3 font-display text-lg font-semibold text-ink">
@@ -62,7 +62,7 @@ export default function Architecture() {
 
         {/* feedback loop annotation */}
         <Reveal className="mt-6 flex items-center gap-3 border-t border-rule pt-5">
-          <span aria-hidden="true" className="font-mono text-go">
+          <span aria-hidden="true" className="font-mono text-go-deep">
             ↺
           </span>
           <p className="text-sm text-graphite">

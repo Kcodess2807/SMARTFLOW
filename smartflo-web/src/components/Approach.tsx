@@ -24,7 +24,7 @@ function MdpCard({
   return (
     <Reveal asChild className="figure-frame flex flex-col p-6">
       <div className="flex items-center justify-between">
-        <span className="microlabel text-go">{step}</span>
+        <span className="microlabel text-go-deep">{step}</span>
         {badge && (
           <span className="rounded-sm bg-sunken px-2 py-1 font-mono text-xs text-graphite">
             {badge}

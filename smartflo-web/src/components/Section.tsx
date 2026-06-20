@@ -36,7 +36,7 @@ export default function Section({
       <Reveal>
         <header className="border-t border-rule pt-6">
           <div className="flex items-baseline gap-4">
-            <span className="microlabel text-go">{index}</span>
+            <span className="microlabel text-go-deep">{index}</span>
             <span className="microlabel">{label}</span>
           </div>
           <h2

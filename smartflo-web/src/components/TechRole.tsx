@@ -80,7 +80,7 @@ export default function TechRole() {
               <li key={r.path} className="flex items-center gap-3 px-5 py-3">
                 <span
                   className={`rounded-sm px-2 py-0.5 font-mono text-[10px] font-bold ${
-                    r.method === "GET" ? "bg-go-tint text-go-deep" : "bg-amber-tint text-amber"
+                    r.method === "GET" ? "bg-go-tint text-go-deep" : "bg-amber-tint text-amber-deep"
                   }`}
                 >
                   {r.method}

@@ -89,7 +89,7 @@ export default function Hero() {
       >
         <div className="mb-3 flex items-center justify-between">
           <span className="microlabel">Fig. 0 — single intersection</span>
-          <span className="microlabel text-go">agent-controlled</span>
+          <span className="microlabel text-go-deep">agent-controlled</span>
         </div>
         <IntersectionAnimation />
       </motion.div>

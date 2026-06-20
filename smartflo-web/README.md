@@ -1,54 +1,44 @@
-# React + TypeScript + Vite
+# SmartFlow — web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfolio site for the SmartFlow reinforcement-learning traffic-signal
+controller. Single-page, React + Vite + TypeScript + Tailwind, with Framer
+Motion for scroll/hover motion (fully `prefers-reduced-motion` aware).
 
-Currently, two official plugins are available:
+All figures shown on the site are transcribed from the repository
+(`backend/results/comparison.csv`, produced by `backend/rl/evaluate.py`) — none
+are invented. See `src/data/results.ts` and `src/data/content.ts`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Develop
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # type-check + production build
+npm run preview  # serve the production build
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Design system
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+"Transit Blueprint" — a light, editorial engineering-paper direction. Tokens
+live in `tailwind.config.js`:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+- **Type:** Fraunces (display) · Public Sans (body) · Space Mono (data)
+- **Colour:** warm paper `#F4F1EA` / ink `#14171A`, one "go" accent `#157F5B`,
+  amber `#E08A00` (caution) and red `#C2453C` (reserved for emergency).
+
+## Structure
+
 ```
+src/
+├── components/   section + primitive components
+├── data/         results.ts (real metrics) · content.ts (copy + facts)
+├── lib/          motion variants
+├── App.tsx       page composition
+└── index.css     base styles, focus, reduced-motion
+```
+
+## Personal links
+
+`src/data/content.ts → LINKS` holds the owner's name, GitHub, LinkedIn and email.
+Replace the `[[placeholder]]` values before publishing.

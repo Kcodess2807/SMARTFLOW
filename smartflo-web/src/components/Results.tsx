@@ -108,7 +108,7 @@ export default function Results() {
 
       {/* Honest caveats */}
       <Reveal className="mt-8 figure-frame border-l-2 border-l-amber p-6">
-        <span className="microlabel text-amber">Reading the numbers honestly</span>
+        <span className="microlabel text-amber-deep">Reading the numbers honestly</span>
         <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-graphite md:grid-cols-3">
           <li>
             <strong className="text-ink">Scope.</strong> One 4-way intersection,
