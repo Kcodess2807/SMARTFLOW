@@ -6,7 +6,7 @@ const NAV_ITEMS = [
   { href: "#approach", label: "Approach" },
   { href: "#results", label: "Results" },
   { href: "#architecture", label: "How it works" },
-  { href: "#role", label: "My role" },
+  { href: "#build", label: "System" },
 ];
 
 export default function Nav() {

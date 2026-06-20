@@ -1,15 +1,10 @@
 // Site copy + technical facts, all sourced from the repository
 // (backend/rl/config.py, env.py, rewards.py, train.py, api/*).
-// Personal links use clearly-marked placeholders until confirmed by the owner.
+// SmartFlow is a group project; the site is written in a neutral, team voice
+// and describes the project, not individual contributions.
 
 export const LINKS = {
   github: "https://github.com/Karush2807/SMARTFLOW", // TODO: confirm canonical repo URL
-  liveDemo: "#demo",
-  // Owner contact — replace placeholders once confirmed.
-  ownerName: "[[Your Name]]",
-  ownerGithub: "https://github.com/[[your-handle]]",
-  ownerLinkedin: "https://www.linkedin.com/in/[[your-handle]]",
-  ownerEmail: "[[you@example.com]]",
 };
 
 export const HERO = {
@@ -99,47 +94,47 @@ export const ARCHITECTURE = [
   },
 ];
 
-// --- Tech & roles ---
-export interface RoleGroup {
+// --- System components (neutral, project-level; no per-person attribution) ---
+export interface Component {
   area: string;
-  owner: "me" | "team";
+  tag: string;
   items: string[];
 }
 
-export const ROLES: RoleGroup[] = [
+export const COMPONENTS: Component[] = [
   {
     area: "RL model & environment",
-    owner: "me",
+    tag: "Reinforcement learning",
     items: ["SUMO MDP design", "Custom queue_wait reward", "DQN / PPO training"],
   },
   {
     area: "Baselines & evaluation",
-    owner: "me",
+    tag: "Benchmarking",
     items: ["Fixed-time · actuated · max-pressure", "Seeded SUMO benchmark harness"],
   },
   {
     area: "Backend API",
-    owner: "me",
+    tag: "Backend",
     items: ["FastAPI service", "Pydantic-validated /predict · /simulate · /metrics"],
   },
   {
     area: "Emergency preemption",
-    owner: "me",
+    tag: "Control",
     items: ["RFID-triggered green priority", "Validated in the SUMO digital twin"],
   },
   {
-    area: "Computer vision (YOLOv8)",
-    owner: "team",
-    items: ["Vehicle detection & counting", "Demo footage"],
+    area: "Computer vision",
+    tag: "Vision",
+    items: ["YOLOv8 vehicle detection & counting", "Feeds per-lane demand to the controller"],
   },
   {
-    area: "Hardware (ESP32 / RFID)",
-    owner: "team",
-    items: ["Reader/writer firmware", "Tagged-vehicle detection"],
+    area: "Hardware",
+    tag: "Embedded",
+    items: ["ESP32 + RFID reader/writer firmware", "Tagged-vehicle detection"],
   },
   {
     area: "Mobile app",
-    owner: "team",
+    tag: "Client",
     items: ["Expo / React Native dashboard"],
   },
 ];

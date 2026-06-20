@@ -1,6 +1,6 @@
 import Section from "./Section";
 import Reveal from "./Reveal";
-import { ROLES, STACK } from "../data/content";
+import { COMPONENTS, STACK } from "../data/content";
 
 const API_ROUTES = [
   { method: "GET", path: "/health", note: "liveness + model status" },
@@ -9,29 +9,21 @@ const API_ROUTES = [
   { method: "GET", path: "/metrics", note: "saved RL-vs-baselines comparison" },
 ];
 
-function RoleCard({
+function ComponentCard({
   area,
-  owner,
+  tag,
   items,
 }: {
   area: string;
-  owner: "me" | "team";
+  tag: string;
   items: string[];
 }) {
-  const mine = owner === "me";
   return (
-    <Reveal
-      asChild
-      className={`figure-frame p-5 ${mine ? "border-l-2 border-l-go" : "opacity-95"}`}
-    >
+    <Reveal asChild className="figure-frame p-5">
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-display text-lg font-semibold text-ink">{area}</h3>
-        <span
-          className={`shrink-0 rounded-sm px-2 py-1 font-mono text-[10px] uppercase tracking-wider ${
-            mine ? "bg-go text-white" : "bg-sunken text-graphite"
-          }`}
-        >
-          {mine ? "My work" : "Teammate"}
+        <span className="shrink-0 rounded-sm bg-sunken px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-graphite">
+          {tag}
         </span>
       </div>
       <ul className="mt-3 space-y-1.5">
@@ -46,28 +38,19 @@ function RoleCard({
 }
 
 export default function TechRole() {
-  const mine = ROLES.filter((r) => r.owner === "me");
-  const team = ROLES.filter((r) => r.owner === "team");
-
   return (
     <Section
-      id="role"
+      id="build"
       index="04"
-      label="Tech & my role"
-      title="What I built — and an honest map of who built the rest."
-      intro="SmartFlow is a group project. I own the reinforcement-learning model, the baselines and evaluation, the backend API, and the emergency-preemption logic. The computer-vision detection, the hardware, and the mobile client were built by teammates."
+      label="Tech & system"
+      title="Computer vision, reinforcement learning, and a service to run them."
+      intro="SmartFlow is a group project. Camera frames become lane-level demand, a reinforcement-learning agent turns that demand into signal decisions, and a small API serves the trained policy — with hardware priority for emergency vehicles. These are the pieces that make it up."
     >
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {mine.map((r) => (
-          <RoleCard key={r.area} {...r} />
+        {COMPONENTS.map((c) => (
+          <ComponentCard key={c.area} {...c} />
         ))}
       </div>
-
-      <Reveal className="mt-5 grid gap-5 md:grid-cols-3">
-        {team.map((r) => (
-          <RoleCard key={r.area} {...r} />
-        ))}
-      </Reveal>
 
       {/* API surface */}
       <Reveal className="mt-12 grid gap-8 lg:grid-cols-[1fr_1fr]">

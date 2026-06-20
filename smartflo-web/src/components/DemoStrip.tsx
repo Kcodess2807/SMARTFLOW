@@ -50,13 +50,13 @@ export default function DemoStrip() {
   return (
     <Reveal className="mt-12">
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <span className="microlabel">The detection feed · team CV component</span>
+        <span className="microlabel">The detection feed</span>
         <span className="microlabel">lazy-loaded</span>
       </div>
       <p className="mb-6 max-w-prose text-sm leading-relaxed text-graphite">
-        Upstream of the controller, a YOLOv8 vehicle-detection pipeline (built by a
-        teammate) turns camera frames into the per-lane vehicle counts that become
-        the agent&rsquo;s state vector. These clips show that detection running.
+        Upstream of the controller, a YOLOv8 vehicle-detection pipeline turns camera
+        frames into the per-lane vehicle counts that become the agent&rsquo;s state
+        vector. These clips show that detection running.
       </p>
       <div className="grid gap-5 sm:grid-cols-2">
         {CLIPS.map((c) => (
