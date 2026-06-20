@@ -2,6 +2,9 @@ import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Approach from "./components/Approach";
 import Results from "./components/Results";
+import Architecture from "./components/Architecture";
+import TechRole from "./components/TechRole";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
@@ -17,7 +20,10 @@ export default function App() {
         <Hero />
         <Approach />
         <Results />
+        <Architecture />
+        <TechRole />
       </main>
+      <Footer />
     </>
   );
 }
