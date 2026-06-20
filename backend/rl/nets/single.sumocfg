@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Standalone SUMO config for the single intersection. Used by the SUMO
+     baselines (fixed-time / actuated) and for manual inspection in sumo-gui.
+     The RL env loads the .net/.rou files directly via sumo-rl. -->
+<configuration>
+    <input>
+        <net-file value="single.net.xml"/>
+        <route-files value="single.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+    <processing>
+        <time-to-teleport value="-1"/>
+    </processing>
+    <report>
+        <no-step-log value="true"/>
+        <no-warnings value="true"/>
+    </report>
+</configuration>

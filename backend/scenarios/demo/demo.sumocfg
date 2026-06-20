@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Quick, presentable look at the scenario WITHOUT Python:
+       sumo-gui -c backend/scenarios/demo/demo.sumocfg
+     This runs SUMO's built-in (fixed-time) signal with the demo visuals. To see
+     the TRAINED RL AGENT driving the signal, use:  python -m rl.record_gif -->
+<configuration>
+    <input>
+        <net-file value="../../rl/nets/single.net.xml"/>
+        <route-files value="demo.rou.xml"/>
+        <gui-settings-file value="demo.view.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="600"/>
+    </time>
+    <processing>
+        <time-to-teleport value="-1"/>
+    </processing>
+    <report>
+        <no-step-log value="true"/>
+        <no-warnings value="true"/>
+    </report>
+</configuration>

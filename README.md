@@ -49,33 +49,43 @@ ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergen
 
 ## 📌 Tech Stack
 
-| Component         | Technology                  |
-|-------------------|-----------------------------|
-| **Frontend**      | React                       |
-| **ML Model**      | YOLOv8                      |
-| **RFID Code**     | CPP                         |
+| Component             | Technology                                  |
+|-----------------------|---------------------------------------------|
+| **Frontend**          | React + Vite (`frontend/`)                  |
+| **RL backend + API**  | SUMO · sumo-rl · Stable-Baselines3 · FastAPI (`backend/`) |
+| **RFID firmware**     | C++ / ESP32 (`hardware/`)                   |
+
+*(An earlier Expo / React Native mobile prototype is preserved in git history.)*
+
+> **The reinforcement-learning traffic controller, training/evaluation, and
+> inference API live in [`backend/`](backend/README.md) — start there for the
+> backend/AI work, including real benchmark results.**
 
 ### 1️⃣ Clone the Repository
 
 Clone the SMARTFLOW repository to your local machine:
 ```bash
 git clone https://github.com/YourOrg/SMARTFLOW.git
-cd SMARTFLOW && pip install -r requirements.txt
+cd SMARTFLOW && pip install -r backend/requirements.txt
 ```
 
 
 ## 🛠️ How It Works
 
-1. **Live Video Input** → Captured from a camera at an intersection.
-2. **Vehicle Detection & Counting** → YOLOv8 detects cars, bikes, and buses.
-3. **Traffic Density Estimation** → `area_counter.py` calculates the percentage.
-4. **Signal Adjustment** → The backend dynamically modifies timings.
-5. **Data Logging & Analytics** → Historical trends stored in Firestore.
+1. **Traffic state** → per-lane queue lengths and densities at the intersection
+   (in simulation today; from camera/CV detection in a deployment).
+2. **RL agent decides** → a DQN policy chooses which green phase to run next.
+3. **Signal actuation** → the chosen phase is applied in SUMO (and would drive the
+   physical signal controller in deployment), with automatic yellow + min-green.
+4. **Emergency preemption** → an RFID-tagged emergency vehicle (ESP32, `hardware/`)
+   triggers green priority for its approach.
+5. **Evaluation** → the agent is benchmarked against fixed-time, actuated, and
+   max-pressure controllers on identical scenarios; see [`backend/README.md`](backend/README.md).
 
 ## 🏆 Future Enhancements
-- 🚀 **Reinforcement Learning (RL)** for better traffic predictions.
+- 🌐 **Multi-intersection coordination** via multi-agent RL (sumo-rl PettingZoo).
 - 🌍 **Edge Computing** for real-time processing on IoT devices.
-- 📊 **Historical Data Insights** to improve urban traffic planning.
+- 📷 **CV → control bridge**: feed live YOLOv8 lane counts into the RL state.
 
 ## 📧 Contact
 For inquiries, reach out to **your-email@example.com** or visit our [GitHub](https://github.com/Karush2807/SMARTFLOW).

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Single 4-way intersection. Center node C is traffic-light controlled;
+     the four outer nodes are the network fringe where vehicles enter/leave. -->
+<nodes>
+    <node id="C" x="0"    y="0"    type="traffic_light"/>
+    <node id="N" x="0"    y="150"  type="priority"/>
+    <node id="S" x="0"    y="-150" type="priority"/>
+    <node id="E" x="150"  y="0"    type="priority"/>
+    <node id="W" x="-150" y="0"    type="priority"/>
+</nodes>
