@@ -30,16 +30,6 @@ export const CONTRIBUTIONS = [
   "Benchmark the learned policy against fixed-time, actuated, and max-pressure baselines over three seeds on an identical scenario.",
 ];
 
-// Reproducibility — exact, real commands from the backend.
-export const REPRODUCIBILITY = {
-  steps: [
-    { label: "Train", cmd: "python -m rl.train --algo dqn --timesteps 100000" },
-    { label: "Evaluate", cmd: "python -m rl.evaluate --seeds 42 7 123" },
-    { label: "Serve", cmd: "uvicorn api.main:app" },
-  ],
-  note: "Fixed seed (42) for training; evaluation averaged over seeds 42 / 7 / 123 on the identical scenario.",
-};
-
 // Verified references — each maps to a method, tool, or baseline actually used.
 export interface Reference {
   n: number;
