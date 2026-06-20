@@ -18,10 +18,17 @@ from .schemas import PHASE_LABELS, TrafficState
 
 logger = logging.getLogger("smartflow.service")
 
-# Default model path can be overridden via env var (e.g. in Docker).
-DEFAULT_MODEL_PATH = os.environ.get(
-    "SMARTFLOW_MODEL", str(config.MODELS_DIR / "dqn_v1.zip")
-)
+def _default_model_path() -> str:
+    """Prefer an explicit env var, then the freshly trained model, then the
+    published model shipped in results/ (so the API works without training)."""
+    if os.environ.get("SMARTFLOW_MODEL"):
+        return os.environ["SMARTFLOW_MODEL"]
+    trained = config.MODELS_DIR / "dqn_v1.zip"
+    published = config.BACKEND_DIR / "results" / "dqn_v1.zip"
+    return str(trained if trained.exists() else published)
+
+
+DEFAULT_MODEL_PATH = _default_model_path()
 
 
 class PolicyService:

@@ -31,6 +31,7 @@ pydantic==2.12.0
 matplotlib==3.11.0
 pandas==3.0.3
 imageio==2.37.3
+tabulate==0.9.0
 
 # --- Optional: ~8x faster headless training. MUST match the installed SUMO
 #     version exactly; remove if it fails to import (the code falls back to

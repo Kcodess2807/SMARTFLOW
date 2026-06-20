@@ -24,10 +24,10 @@ COPY requirements.txt .
 RUN sed -i '/^libsumo==/d' requirements.txt \
     && pip install --no-cache-dir -r requirements.txt
 
-# App code (api/, rl/, and the trained model under artifacts/models/).
+# App code (api/, rl/, and the published model under results/).
 COPY . /app
 
-ENV SMARTFLOW_MODEL=/app/artifacts/models/dqn_v1.zip
+ENV SMARTFLOW_MODEL=/app/results/dqn_v1.zip
 
 EXPOSE 8000
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

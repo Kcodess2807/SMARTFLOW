@@ -62,3 +62,7 @@ backend/rl/nets/*.trips.xml
 # Bytecode / caches
 __pycache__/
 *.pyc
+# Published portfolio artifacts must be tracked despite the broad `results/`
+# rule above (inherited from the old darkflow .gitignore).
+!backend/results/
+!backend/results/**

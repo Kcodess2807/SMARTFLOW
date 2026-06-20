@@ -140,6 +140,19 @@ def evaluate(model_path: str, seeds: List[int]) -> "pd.DataFrame":
     return df
 
 
+def _to_markdown(df) -> str:
+    """Render a DataFrame as a GitHub markdown table without extra deps."""
+    try:
+        return df.to_markdown()  # uses `tabulate` if available
+    except ImportError:
+        cols = [df.index.name or "controller", *map(str, df.columns)]
+        lines = ["| " + " | ".join(cols) + " |",
+                 "| " + " | ".join("---" for _ in cols) + " |"]
+        for idx, row in df.iterrows():
+            lines.append("| " + " | ".join([str(idx), *[str(v) for v in row.values]]) + " |")
+        return "\n".join(lines)
+
+
 def _plot_comparison(df, out_png: str) -> None:
     import matplotlib
 
@@ -182,9 +195,10 @@ def main() -> None:
     print(df.round(2).to_string())
     md_path = config.ARTIFACTS_DIR / "comparison.md"
     csv_path = config.ARTIFACTS_DIR / "comparison.csv"
-    df.round(2).to_csv(csv_path)
+    rounded = df.round(2)
+    rounded.to_csv(csv_path)
     with open(md_path, "w") as f:
-        f.write(df.round(2).to_markdown())
+        f.write(_to_markdown(rounded))
     print(f"[ok] table -> {csv_path} and {md_path}")
     _plot_comparison(df, str(config.PLOTS_DIR / "comparison.png"))
 
