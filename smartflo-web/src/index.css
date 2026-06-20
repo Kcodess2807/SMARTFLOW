@@ -2,28 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: Arial, Helvetica, var(--font-rubik-vinyl), sans-serif;
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
+@layer base {
+  :root {
+    color-scheme: light;
   }
-  
-  /* Firefox */
+
   html {
-    scrollbar-width: none; /* Options: auto, thin, none */
-    scrollbar-color: #888 transparent; /* Thumb color and transparent track */
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
-  
-  /* Chrome, Edge, Safari, Opera */
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: "kern", "liga", "calt";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Fraunces optical sizing for large display type */
+  h1,
+  h2,
+  h3 {
+    font-optical-sizing: auto;
+  }
+
+  /* Visible, on-brand focus state for keyboard users everywhere */
+  :focus-visible {
+    outline: 2px solid theme("colors.go.DEFAULT");
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: theme("colors.go.tint");
+    color: theme("colors.ink");
+  }
+
+  /* Thin, paper-toned scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.rule") transparent;
+  }
   ::-webkit-scrollbar {
-    width: 10px; /* Width of the scrollbar */
+    width: 10px;
+    height: 10px;
   }
-  
   ::-webkit-scrollbar-track {
-    background: transparent; /* Makes track (background line) invisible */
+    background: transparent;
   }
-  
   ::-webkit-scrollbar-thumb {
-    background: #888; /* Scrollbar thumb color */
-    border-radius: 10px; /* Makes the thumb rounded */
+    background: theme("colors.rule");
+    border-radius: 999px;
   }
+}
+
+@layer components {
+  /* Tracked, uppercase mono micro-label — the recurring "figure caption" voice */
+  .microlabel {
+    @apply font-mono text-micro uppercase text-muted;
+  }
+
+  /* Blueprint hairline used for section dividers and figure frames */
+  .hairline {
+    @apply border-rule;
+  }
+
+  /* A figure frame, like a plate in a technical paper */
+  .figure-frame {
+    @apply bg-surface border border-rule rounded-md;
+  }
+
+  /* Blueprint grid background (faint coordinate grid) */
+  .blueprint-grid {
+    background-image: linear-gradient(
+        to right,
+        theme("colors.rule") 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, theme("colors.rule") 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.28;
+  }
+}
+
+/* Respect reduced-motion: neutralise all animation/transition globally.
+   Framer Motion is additionally guarded in JS via useReducedMotion(). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

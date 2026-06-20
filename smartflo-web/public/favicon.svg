@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#14171A" />
+  <!-- intersection: two crossing lanes -->
+  <line x1="16" y1="2" x2="16" y2="30" stroke="#5A6066" stroke-width="1" stroke-dasharray="2 2" />
+  <line x1="2" y1="16" x2="30" y2="16" stroke="#5A6066" stroke-width="1" stroke-dasharray="2 2" />
+  <!-- signal head: three stacked lamps, "go" active -->
+  <rect x="11.5" y="6" width="9" height="20" rx="2.5" fill="#F4F1EA" />
+  <circle cx="16" cy="10.5" r="2.1" fill="#C2453C" />
+  <circle cx="16" cy="16" r="2.1" fill="#E08A00" />
+  <circle cx="16" cy="21.5" r="2.4" fill="#157F5B" />
+</svg>

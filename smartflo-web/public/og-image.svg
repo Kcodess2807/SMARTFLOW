@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#F4F1EA" />
+  <!-- faint blueprint grid -->
+  <g stroke="#D8D2C4" stroke-width="1" opacity="0.5">
+    <g>
+      <line x1="0" y1="90" x2="1200" y2="90" /><line x1="0" y1="180" x2="1200" y2="180" />
+      <line x1="0" y1="270" x2="1200" y2="270" /><line x1="0" y1="360" x2="1200" y2="360" />
+      <line x1="0" y1="450" x2="1200" y2="450" /><line x1="0" y1="540" x2="1200" y2="540" />
+    </g>
+    <g>
+      <line x1="90" y1="0" x2="90" y2="630" /><line x1="270" y1="0" x2="270" y2="630" />
+      <line x1="450" y1="0" x2="450" y2="630" /><line x1="630" y1="0" x2="630" y2="630" />
+      <line x1="810" y1="0" x2="810" y2="630" /><line x1="990" y1="0" x2="990" y2="630" />
+    </g>
+  </g>
+  <text x="90" y="150" font-family="'Space Mono', monospace" font-size="22" letter-spacing="6" fill="#8A8F98">SMARTFLOW · RL TRAFFIC-SIGNAL CONTROL</text>
+  <text x="86" y="280" font-family="Georgia, serif" font-size="92" font-weight="600" fill="#14171A">Reinforcement learning</text>
+  <text x="86" y="380" font-family="Georgia, serif" font-size="92" font-weight="600" fill="#14171A">for traffic signals.</text>
+  <text x="90" y="470" font-family="'Public Sans', sans-serif" font-size="34" fill="#5A6066">~55% lower average waiting time vs. fixed-time — trained &amp; benchmarked in SUMO.</text>
+  <!-- signal head accent -->
+  <rect x="980" y="430" width="130" height="120" rx="14" fill="#14171A" />
+  <circle cx="1045" cy="465" r="15" fill="#C2453C" />
+  <circle cx="1045" cy="500" r="15" fill="#E08A00" />
+  <circle cx="1045" cy="535" r="17" fill="#157F5B" />
+</svg>
