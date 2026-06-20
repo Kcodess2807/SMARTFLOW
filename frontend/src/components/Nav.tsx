@@ -1,6 +1,5 @@
 import { Github } from "lucide-react";
 import { LINKS } from "../data/content";
-import SignalMark from "./SignalMark";
 
 const NAV_ITEMS = [
   { href: "#abstract", label: "Abstract" },
@@ -19,9 +18,8 @@ export default function Nav() {
       >
         <a
           href="#top"
-          className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-ink"
+          className="font-display text-lg font-semibold tracking-tight text-ink"
         >
-          <SignalMark className="h-6 w-6" />
           SmartFlow
         </a>
 
