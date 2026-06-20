@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Presentable demo traffic for the single intersection.
+     A colourful vehicle mix (cars/buses/trucks) so the scene reads clearly, with
+     heavier North-South demand than East-West so the agent's decision to switch
+     green is visually obvious, plus two red emergency vehicles for drama.
+     This is a DEMO scenario (visual variety) and is intentionally separate from
+     the training/eval routes that the published results depend on. -->
+<routes>
+    <!-- Colour-coded vehicle mix; vehicles take their type's colour in sumo-gui. -->
+    <vTypeDistribution id="mix">
+        <vType id="car"   vClass="passenger" color="0.20,0.55,0.95" length="5"  probability="0.86"/>
+        <vType id="bus"   vClass="bus"       color="0.15,0.75,0.35" length="12" probability="0.05"/>
+        <vType id="truck" vClass="truck"     color="0.95,0.60,0.10" length="8"  probability="0.09"/>
+    </vTypeDistribution>
+    <vType id="emergency" vClass="emergency" guiShape="emergency" color="1,0,0"
+           length="6.5" speedFactor="1.3"/>
+
+    <!-- Through movements -->
+    <route id="ns" edges="N2C C2S"/>
+    <route id="sn" edges="S2C C2N"/>
+    <route id="ew" edges="E2C C2W"/>
+    <route id="we" edges="W2C C2E"/>
+    <!-- A few turning movements for visual richness -->
+    <route id="ne" edges="N2C C2E"/>
+    <route id="sw" edges="S2C C2W"/>
+
+    <!-- Heavier North-South demand -->
+    <flow id="f_ns" type="mix" route="ns" begin="0" end="600" period="6.0" departLane="free"/>
+    <flow id="f_sn" type="mix" route="sn" begin="0" end="600" period="6.5" departLane="free"/>
+    <!-- Lighter East-West demand -->
+    <flow id="f_ew" type="mix" route="ew" begin="0" end="600" period="9.0" departLane="free"/>
+    <flow id="f_we" type="mix" route="we" begin="0" end="600" period="10.0" departLane="free"/>
+    <!-- Occasional turners -->
+    <flow id="f_ne" type="mix" route="ne" begin="0" end="600" period="18.0" departLane="free"/>
+    <flow id="f_sw" type="mix" route="sw" begin="0" end="600" period="18.0" departLane="free"/>
+
+    <!-- Emergency vehicles cut across at two moments. -->
+    <vehicle id="ev0" type="emergency" route="we" depart="150" departSpeed="max"/>
+    <vehicle id="ev1" type="emergency" route="sn" depart="380" departSpeed="max"/>
+</routes>

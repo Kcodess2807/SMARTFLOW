@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- sumo-gui view settings for a presentable demo of the single intersection.
+     Loaded via the gui-settings-file option (record_gif.py and demo.sumocfg).
+       * "real world" scheme  : clean dark roads on green background
+       * viewport centred on the junction (net coords ~150,150) at a zoom that
+         shows the queues building and clearing on every approach
+       * vehicles enlarged so they read clearly in a recording or screenshot
+       * a visible playback delay so the GUI animates at a watchable speed -->
+<viewsettings>
+    <scheme name="real world"/>
+    <delay value="70"/>
+    <viewport zoom="430" x="150" y="150" angle="0"/>
+    <vehicles vehicleSize.exaggeration="2.2" vehicleSize.minSize="2.0"
+              vehicleName.show="false" showBlinker="true"/>
+    <junctions junctionName.show="false" drawLinkTLIndex.show="false"/>
+    <background showGrid="false"/>
+</viewsettings>
