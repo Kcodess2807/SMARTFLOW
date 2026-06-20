@@ -51,11 +51,11 @@ ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergen
 
 | Component             | Technology                                  |
 |-----------------------|---------------------------------------------|
-| **Frontend (web)**    | React (`smartflo-web`)                      |
-| **Frontend (mobile)** | Expo / React Native (`smartflo-mobile`)     |
+| **Frontend**          | React + Vite (`frontend/`)                  |
 | **RL backend + API**  | SUMO · sumo-rl · Stable-Baselines3 · FastAPI (`backend/`) |
-| **Vehicle detection** | YOLOv8 (computer-vision experiments)        |
 | **RFID firmware**     | C++ / ESP32 (`hardware/`)                   |
+
+*(An Expo / React Native mobile app is archived under `legacy/smartflo-mobile` for now.)*
 
 > **The reinforcement-learning traffic controller, training/evaluation, and
 > inference API live in [`backend/`](backend/README.md) — start there for the
@@ -66,7 +66,7 @@ ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergen
 Clone the SMARTFLOW repository to your local machine:
 ```bash
 git clone https://github.com/YourOrg/SMARTFLOW.git
-cd SMARTFLOW && pip install -r requirements.txt
+cd SMARTFLOW && pip install -r backend/requirements.txt
 ```
 
 

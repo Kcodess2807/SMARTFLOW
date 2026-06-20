@@ -6,8 +6,8 @@ simulator and served behind a FastAPI inference API.
 
 > **Scope of this README.** This documents my contribution: the **RL model, the
 > SUMO environment, the evaluation against classical baselines, and the
-> inference API**. The `smartflo-web` and `smartflo-mobile` apps are teammates'
-> work and are not covered here.
+> inference API**. The web app (`../frontend`) is a teammate's work and is not
+> covered here.
 
 ---
 
@@ -315,5 +315,6 @@ backend/
 ## Credits
 
 RL model, SUMO environment, evaluation, and API: this contribution. Web app
-(`smartflo-web`) and mobile app (`smartflo-mobile`): teammates. ESP32/RFID
-firmware (`hardware/`): retained from the original project.
+(`../frontend`): teammate. A mobile app is archived under
+`../legacy/smartflo-mobile`. ESP32/RFID firmware (`hardware/`): retained from the
+original project.
