@@ -1,5 +1,7 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import Approach from "./components/Approach";
+import Results from "./components/Results";
 
 export default function App() {
   return (
@@ -13,6 +15,8 @@ export default function App() {
       <Nav />
       <main>
         <Hero />
+        <Approach />
+        <Results />
       </main>
     </>
   );
