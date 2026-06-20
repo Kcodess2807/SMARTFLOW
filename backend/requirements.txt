@@ -1,0 +1,38 @@
+# SmartFlow backend: RL traffic-signal control + inference API.
+# Python 3.11. Pinned to a known-good, mutually compatible set (verified on
+# Windows; torch is the CPU build).
+#
+# SUMO itself is a system dependency, not a pip package: install SUMO 1.22 and
+# set SUMO_HOME (https://sumo.dlr.de/docs/Installing). Alternatively, get the
+# binaries via pip:  pip install eclipse-sumo==1.22.0
+#
+# Install:  pip install -r requirements.txt
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# --- RL environment & simulation ---
+sumo-rl==1.4.5
+traci==1.27.0
+sumolib==1.27.0
+gymnasium==1.1.1
+
+# --- Learning ---
+stable-baselines3==2.6.0
+torch==2.5.1
+tensorboard==2.20.0
+numpy==2.4.6
+
+# --- Inference API ---
+fastapi==0.136.3
+uvicorn==0.37.0
+pydantic==2.12.0
+
+# --- Evaluation / plotting / GIF ---
+matplotlib==3.11.0
+pandas==3.0.3
+imageio==2.37.3
+
+# --- Optional: ~8x faster headless training. MUST match the installed SUMO
+#     version exactly; remove if it fails to import (the code falls back to
+#     pure-python traci automatically).
+libsumo==1.22.0

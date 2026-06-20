@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Emergency-vehicle preemption demo on the single intersection.
+     Moderate background traffic on all four approaches plus one emergency
+     vehicle (ev0, vClass="emergency") that crosses West->East at t=120s.
+     A non-preempting controller makes ev0 wait at red; the preemption
+     controller detects it and serves its approach. Run rl/emergency_demo.py. -->
+<routes>
+    <vType id="car" vClass="passenger" length="5" maxSpeed="13.89" color="0.8,0.8,0.9"/>
+    <vType id="emergency" vClass="emergency" guiShape="emergency"
+           length="6.5" maxSpeed="16" speedFactor="1.2" color="1,0,0"/>
+
+    <route id="ns" edges="N2C C2S"/>
+    <route id="sn" edges="S2C C2N"/>
+    <route id="ew" edges="E2C C2W"/>
+    <route id="we" edges="W2C C2E"/>
+
+    <!-- Background demand: NS heavier than EW, so a fixed/greedy controller
+         tends to favour the NS green when the emergency vehicle arrives EW. -->
+    <flow id="f_ns" type="car" route="ns" begin="0" end="600" period="2.5"/>
+    <flow id="f_sn" type="car" route="sn" begin="0" end="600" period="2.5"/>
+    <flow id="f_ew" type="car" route="ew" begin="0" end="600" period="5"/>
+    <flow id="f_we" type="car" route="we" begin="0" end="600" period="5"/>
+
+    <!-- The emergency vehicle, arriving on the lighter EW direction. -->
+    <vehicle id="ev0" type="emergency" route="we" depart="120" departSpeed="max"/>
+</routes>

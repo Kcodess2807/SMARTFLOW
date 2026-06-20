@@ -19,9 +19,14 @@ MODELS_DIR = ARTIFACTS_DIR / "models"
 LOG_DIR = ARTIFACTS_DIR / "logs"                   # TensorBoard + episode CSVs
 PLOTS_DIR = ARTIFACTS_DIR / "plots"
 
-NET_FILE = NETS_DIR / "single.net.xml"
+NET_FILE = NETS_DIR / "single.net.xml"                 # static-TL network
+NET_ACTUATED_FILE = NETS_DIR / "single_actuated.net.xml"  # gap-based actuated TL
 ROUTE_FILE = NETS_DIR / "single.rou.xml"
 SUMOCFG_FILE = NETS_DIR / "single.sumocfg"
+
+# Phase 5: emergency-vehicle preemption scenario (reuses the static network).
+SCENARIOS_DIR = BACKEND_DIR / "scenarios"
+EMERGENCY_ROUTE_FILE = SCENARIOS_DIR / "emergency" / "emergency.rou.xml"
 
 for _d in (MODELS_DIR, LOG_DIR, PLOTS_DIR):
     _d.mkdir(parents=True, exist_ok=True)

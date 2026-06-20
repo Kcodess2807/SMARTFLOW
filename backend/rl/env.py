@@ -45,6 +45,9 @@ def make_env(
     out_csv_name: str | None = None,
     num_seconds: int | None = None,
     render_mode: str | None = None,
+    net_file: str | None = None,
+    route_file: str | None = None,
+    additional_sumo_cmd: str | None = None,
 ) -> SumoEnvironment:
     """Build a single-agent ``SumoEnvironment`` for the single intersection.
 
@@ -52,11 +55,13 @@ def make_env(
         reward: reward name (``"queue_wait"``, ``"diff-waiting-time"``, ...) or callable.
         use_gui: launch sumo-gui instead of headless sumo (for demos/recording).
         fixed_ts: if True, SUMO runs its own fixed-time program and ignores
-            actions -- used to implement the fixed-time baseline.
+            actions -- used to implement the fixed-time / actuated baselines.
         seed: SUMO RNG seed (controls stochastic insertion) for reproducibility.
         out_csv_name: if set, sumo-rl writes per-step metrics to this CSV stem.
         num_seconds: override episode length (defaults to config.ENV_CONFIG).
         render_mode: e.g. "rgb_array" to grab frames for a GIF.
+        net_file: override network file (e.g. the actuated-TL variant for the
+            actuated baseline). Defaults to the static-TL network.
 
     Returns:
         A Gymnasium-compatible single-agent environment.
@@ -66,8 +71,8 @@ def make_env(
         env_kwargs["num_seconds"] = num_seconds
 
     return SumoEnvironment(
-        net_file=str(config.NET_FILE),
-        route_file=str(config.ROUTE_FILE),
+        net_file=str(net_file or config.NET_FILE),
+        route_file=str(route_file or config.ROUTE_FILE),
         single_agent=True,
         reward_fn=_resolve_reward(reward),
         use_gui=use_gui,
@@ -76,5 +81,6 @@ def make_env(
         out_csv_name=out_csv_name,
         render_mode=render_mode,
         sumo_warnings=False,
+        additional_sumo_cmd=additional_sumo_cmd,
         **env_kwargs,
     )

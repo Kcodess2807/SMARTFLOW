@@ -1,0 +1,14 @@
+# Keep the image small: ship code + the trained model, nothing else.
+artifacts/logs/
+artifacts/plots/
+artifacts/frames/
+artifacts/*.csv
+artifacts/*.md
+**/__pycache__/
+*.pyc
+data/
+*.mp4
+*.npy
+*.png
+yolov8*.pt
+.venv/
