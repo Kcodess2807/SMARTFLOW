@@ -55,7 +55,7 @@ ESP32 with RFID Scanner: Detects RFID tags on authorized vehicles (e.g., emergen
 | **RL backend + API**  | SUMO · sumo-rl · Stable-Baselines3 · FastAPI (`backend/`) |
 | **RFID firmware**     | C++ / ESP32 (`hardware/`)                   |
 
-*(An Expo / React Native mobile app is archived under `legacy/smartflo-mobile` for now.)*
+*(An earlier Expo / React Native mobile prototype is preserved in git history.)*
 
 > **The reinforcement-learning traffic controller, training/evaluation, and
 > inference API live in [`backend/`](backend/README.md) — start there for the

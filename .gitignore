@@ -66,3 +66,8 @@ __pycache__/
 # rule above (inherited from the old darkflow .gitignore).
 !backend/results/
 !backend/results/**
+
+.venv/
+
+# Local-only working notes (not for the shared repo)
+AUDIT.md

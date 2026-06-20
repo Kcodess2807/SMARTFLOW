@@ -43,10 +43,9 @@ randomized demand (~2050 vehicles). Numbers are produced by
 
 The original project framed signal control as RL but **the agent's action was
 never actually applied** — the lights advanced on a fixed wall-clock timer and
-the chosen action was ignored
-([`legacy/old_rl_controller/traffic_env.py`](../legacy/old_rl_controller/traffic_env.py),
-`step()`). The "agent" controlled nothing, so its reward could not respond to
-its decisions and no learning signal was meaningful.
+the chosen action was ignored (the old pygame-based `traffic_env.py`, preserved
+in git history). The "agent" controlled nothing, so its reward could not respond
+to its decisions and no learning signal was meaningful.
 
 Migrating to SUMO fixes this at the root: `env.step(action)` **physically
 switches the SUMO traffic-light phase** to the one the agent selected (after
@@ -290,7 +289,7 @@ backend/
 ├── Dockerfile           API container
 └── requirements.txt     pinned, mutually-compatible stack
 
-../legacy/    archived pygame sim, darkflow, old duplicate scripts, buggy old RL env
+../frontend/  React + Vite web app (teammate)
 ../hardware/  ESP32 + RFID firmware (kept as-is)
 ```
 
@@ -315,6 +314,5 @@ backend/
 ## Credits
 
 RL model, SUMO environment, evaluation, and API: this contribution. Web app
-(`../frontend`): teammate. A mobile app is archived under
-`../legacy/smartflo-mobile`. ESP32/RFID firmware (`hardware/`): retained from the
+(`../frontend`): teammate. ESP32/RFID firmware (`hardware/`): retained from the
 original project.

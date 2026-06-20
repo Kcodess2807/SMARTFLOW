@@ -3,9 +3,9 @@
 Wraps sumo-rl's ``SumoEnvironment`` in single-agent mode so it is a plain
 Gymnasium env that Stable-Baselines3 can train on directly.
 
-This is where the original project's core bug is fixed: in the old
-``legacy/old_rl_controller/traffic_env.py`` the agent's action was ignored and
-the lights advanced on a wall-clock timer. Here ``env.step(action)`` is handled
+This is where the original project's core bug is fixed: in the old pygame-based
+RL controller (see git history) the agent's action was ignored and the lights
+advanced on a wall-clock timer. Here ``env.step(action)`` is handled
 by sumo-rl, which *physically* switches the SUMO traffic-light phase to the one
 the agent selected (after enforcing yellow + min-green), and the reward is then
 computed from the resulting simulation state. The agent genuinely controls the
