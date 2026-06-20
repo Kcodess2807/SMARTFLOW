@@ -136,15 +136,6 @@ export const REFERENCES: Reference[] = [
   },
 ];
 
-export const BIBTEX = `@misc{smartflow2025,
-  title  = {SmartFlow: Reinforcement Learning for Traffic-Signal Control in SUMO},
-  author = {SmartFlow Team},
-  year   = {2025},
-  note   = {Group project. DQN signal controller benchmarked against
-            fixed-time, actuated, and max-pressure baselines.},
-  url    = {https://github.com/Karush2807/SMARTFLOW}
-}`;
-
 // --- The MDP, straight from backend/rl/env.py + rewards.py + config.py ---
 export const MDP = {
   state: {
