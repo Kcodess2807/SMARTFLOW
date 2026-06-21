@@ -37,6 +37,7 @@ GRID_DIR = NETS_DIR / "grid"
 GRID_NET_FILE = GRID_DIR / "grid.net.xml"                  # static-TL grid
 GRID_NET_ACTUATED_FILE = GRID_DIR / "grid_actuated.net.xml"  # actuated-TL grid
 GRID_ROUTE_FILE = GRID_DIR / "grid.rou.xml"
+GRID_VIEW_FILE = GRID_DIR / "grid.view.xml"                 # sumo-gui view settings
 
 for _d in (MODELS_DIR, LOG_DIR, PLOTS_DIR):
     _d.mkdir(parents=True, exist_ok=True)

@@ -99,9 +99,9 @@ def run_grid_episode(kind: str, model, seed: int) -> Dict[str, float]:
 
 def evaluate(model_path: str, seeds: List[int]) -> "pd.DataFrame":
     import pandas as pd
-    from .policy import load_model
+    from stable_baselines3 import PPO
 
-    model = load_model(model_path)
+    model = PPO.load(model_path)  # the grid policy is always parameter-sharing PPO
     rows = []
     for kind, label in CONTROLLERS.items():
         per_seed = []
