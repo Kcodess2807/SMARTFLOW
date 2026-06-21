@@ -5,7 +5,7 @@
 <viewsettings>
     <scheme name="real world"/>
     <delay value="60"/>
-    <viewport zoom="270" x="250" y="250" angle="0"/>
+    <viewport zoom="160" x="250" y="250" angle="0"/>
     <vehicles vehicleSize.exaggeration="2.0" vehicleSize.minSize="2.0"
               vehicleName.show="false" showBlinker="true"/>
     <junctions junctionName.show="false" drawLinkTLIndex.show="false"/>

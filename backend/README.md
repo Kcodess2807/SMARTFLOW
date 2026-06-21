@@ -167,6 +167,11 @@ a **single shared policy is trained with parameter-sharing PPO** (Stable-Baselin
 + SuperSuit) — the four agents are vectorised so every environment step yields
 four transitions. One policy controls all intersections.
 
+<p align="center">
+  <img src="results/grid_demo.gif" alt="Trained shared policy controlling the 2x2 grid" width="100%">
+  <br><em>The trained shared policy controlling all four intersections of the 2×2 grid.</em>
+</p>
+
 **Table 2.** Network-wide performance over 3 seeds (2×2 grid, 1-hour demand).
 
 | Controller          | Avg wait (s) ↓ | Avg time-loss (s) ↓ | Avg queue (veh) ↓ | Mean speed (m/s) ↑ | Throughput (veh) ↑ |
@@ -197,6 +202,8 @@ and a rigorous, like-for-like benchmark — not a claim of RL supremacy.
 ```bash
 python -m rl.train_grid    --timesteps 200000               # parameter-sharing PPO (~45 min CPU)
 python -m rl.evaluate_grid --model results/grid_ppo_v1.zip --seeds 42 7 123
+python -m rl.record_grid   --model results/grid_ppo_v1.zip  # GIF above (opens sumo-gui)
+# instant fixed-time view, no Python:  sumo-gui -c rl/nets/grid/grid_demo.sumocfg
 ```
 
 ---
